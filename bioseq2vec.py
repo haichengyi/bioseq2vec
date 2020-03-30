@@ -80,6 +80,6 @@ if __name__ == "__main__":
 	transformer = args.model
 	sequence_dict = read_fasta_file(args.input)
 	words = get_k_nucleotide_composition(4,sequence_dict)
-	sentences.append(s)
+	sentences.append()
 
 

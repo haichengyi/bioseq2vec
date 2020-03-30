@@ -37,7 +37,29 @@
     <property name="last_opened_file_path" value="$PROJECT_DIR$" />
     <property name="settings.editor.selected.configurable" value="project.propVCSSupport.Mappings" />
   </component>
-  <component name="RunManager" selected="Python.attention">
+  <component name="RunManager" selected="Python.main">
+    <configuration default="true" type="PythonConfigurationType" factoryName="Python">
+      <module name="seq2vec" />
+      <option name="INTERPRETER_OPTIONS" value="" />
+      <option name="PARENT_ENVS" value="true" />
+      <envs>
+        <env name="PYTHONUNBUFFERED" value="1" />
+      </envs>
+      <option name="SDK_HOME" value="" />
+      <option name="WORKING_DIRECTORY" value="" />
+      <option name="IS_MODULE_SDK" value="false" />
+      <option name="ADD_CONTENT_ROOTS" value="true" />
+      <option name="ADD_SOURCE_ROOTS" value="true" />
+      <EXTENSION ID="PythonCoverageRunConfigurationExtension" runner="coverage.py" />
+      <option name="SCRIPT_NAME" value="" />
+      <option name="PARAMETERS" value="" />
+      <option name="SHOW_COMMAND_LINE" value="true" />
+      <option name="EMULATE_TERMINAL" value="false" />
+      <option name="MODULE_MODE" value="false" />
+      <option name="REDIRECT_INPUT" value="false" />
+      <option name="INPUT_FILE" value="" />
+      <method v="2" />
+    </configuration>
     <configuration name="attention" type="PythonConfigurationType" factoryName="Python" temporary="true" nameIsGenerated="true">
       <module name="seq2vec" />
       <option name="INTERPRETER_OPTIONS" value="" />
@@ -82,10 +104,33 @@
       <option name="INPUT_FILE" value="" />
       <method v="2" />
     </configuration>
+    <configuration name="util" type="PythonConfigurationType" factoryName="Python" temporary="true" nameIsGenerated="true">
+      <module name="seq2vec" />
+      <option name="INTERPRETER_OPTIONS" value="" />
+      <option name="PARENT_ENVS" value="true" />
+      <envs>
+        <env name="PYTHONUNBUFFERED" value="1" />
+      </envs>
+      <option name="SDK_HOME" value="" />
+      <option name="WORKING_DIRECTORY" value="$PROJECT_DIR$/seq2vec/util" />
+      <option name="IS_MODULE_SDK" value="true" />
+      <option name="ADD_CONTENT_ROOTS" value="true" />
+      <option name="ADD_SOURCE_ROOTS" value="true" />
+      <EXTENSION ID="PythonCoverageRunConfigurationExtension" runner="coverage.py" />
+      <option name="SCRIPT_NAME" value="$PROJECT_DIR$/seq2vec/util/util.py" />
+      <option name="PARAMETERS" value="" />
+      <option name="SHOW_COMMAND_LINE" value="true" />
+      <option name="EMULATE_TERMINAL" value="false" />
+      <option name="MODULE_MODE" value="false" />
+      <option name="REDIRECT_INPUT" value="false" />
+      <option name="INPUT_FILE" value="" />
+      <method v="2" />
+    </configuration>
     <recent_temporary>
       <list>
-        <item itemvalue="Python.attention" />
         <item itemvalue="Python.main" />
+        <item itemvalue="Python.util" />
+        <item itemvalue="Python.attention" />
       </list>
     </recent_temporary>
   </component>
@@ -104,6 +149,10 @@
       <workItem from="1585326476760" duration="10000" />
       <workItem from="1585326525895" duration="1876000" />
       <workItem from="1585382481272" duration="5632000" />
+      <workItem from="1585483911183" duration="2808000" />
+      <workItem from="1585486736057" duration="18719000" />
+      <workItem from="1585510472373" duration="5033000" />
+      <workItem from="1585553573576" duration="15582000" />
     </task>
     <servers />
   </component>
@@ -124,29 +173,61 @@
       <screen x="0" y="0" width="1536" height="824" />
     </state>
     <state x="223" y="70" key="#com.intellij.execution.impl.EditConfigurationsDialog/0.0.1536.824@0.0.1536.824" timestamp="1585153429307" />
-    <state width="1493" height="231" key="GridCell.Tab.0.bottom" timestamp="1585388118343">
+    <state width="1493" height="216" key="GridCell.Tab.0.bottom" timestamp="1585572640411">
       <screen x="0" y="0" width="1536" height="824" />
     </state>
-    <state width="1493" height="231" key="GridCell.Tab.0.bottom/0.0.1536.824@0.0.1536.824" timestamp="1585388118343" />
-    <state width="1493" height="231" key="GridCell.Tab.0.center" timestamp="1585388118343">
+    <state width="1493" height="216" key="GridCell.Tab.0.bottom/0.0.1536.824@0.0.1536.824" timestamp="1585572640411" />
+    <state width="1493" height="216" key="GridCell.Tab.0.center" timestamp="1585572640411">
       <screen x="0" y="0" width="1536" height="824" />
     </state>
-    <state width="1493" height="231" key="GridCell.Tab.0.center/0.0.1536.824@0.0.1536.824" timestamp="1585388118343" />
-    <state width="1493" height="231" key="GridCell.Tab.0.left" timestamp="1585388118343">
+    <state width="1493" height="216" key="GridCell.Tab.0.center/0.0.1536.824@0.0.1536.824" timestamp="1585572640411" />
+    <state width="1493" height="216" key="GridCell.Tab.0.left" timestamp="1585572640410">
       <screen x="0" y="0" width="1536" height="824" />
     </state>
-    <state width="1493" height="231" key="GridCell.Tab.0.left/0.0.1536.824@0.0.1536.824" timestamp="1585388118343" />
-    <state width="1493" height="231" key="GridCell.Tab.0.right" timestamp="1585388118343">
+    <state width="1493" height="216" key="GridCell.Tab.0.left/0.0.1536.824@0.0.1536.824" timestamp="1585572640410" />
+    <state width="1493" height="216" key="GridCell.Tab.0.right" timestamp="1585572640411">
       <screen x="0" y="0" width="1536" height="824" />
     </state>
-    <state width="1493" height="231" key="GridCell.Tab.0.right/0.0.1536.824@0.0.1536.824" timestamp="1585388118343" />
+    <state width="1493" height="216" key="GridCell.Tab.0.right/0.0.1536.824@0.0.1536.824" timestamp="1585572640411" />
+    <state width="1493" height="220" key="GridCell.Tab.1.bottom" timestamp="1585571492467">
+      <screen x="0" y="0" width="1536" height="824" />
+    </state>
+    <state width="1493" height="220" key="GridCell.Tab.1.bottom/0.0.1536.824@0.0.1536.824" timestamp="1585571492467" />
+    <state width="1493" height="220" key="GridCell.Tab.1.center" timestamp="1585571492467">
+      <screen x="0" y="0" width="1536" height="824" />
+    </state>
+    <state width="1493" height="220" key="GridCell.Tab.1.center/0.0.1536.824@0.0.1536.824" timestamp="1585571492467" />
+    <state width="1493" height="220" key="GridCell.Tab.1.left" timestamp="1585571492467">
+      <screen x="0" y="0" width="1536" height="824" />
+    </state>
+    <state width="1493" height="220" key="GridCell.Tab.1.left/0.0.1536.824@0.0.1536.824" timestamp="1585571492467" />
+    <state width="1493" height="220" key="GridCell.Tab.1.right" timestamp="1585571492467">
+      <screen x="0" y="0" width="1536" height="824" />
+    </state>
+    <state width="1493" height="220" key="GridCell.Tab.1.right/0.0.1536.824@0.0.1536.824" timestamp="1585571492467" />
     <state x="272" y="57" key="SettingsEditor" timestamp="1585154548387">
       <screen x="0" y="0" width="1536" height="824" />
     </state>
     <state x="272" y="57" key="SettingsEditor/0.0.1536.824@0.0.1536.824" timestamp="1585154548387" />
+    <state width="776" height="420" key="XDebugger.FullValuePopup" timestamp="1585512106997">
+      <screen x="0" y="0" width="1536" height="824" />
+    </state>
+    <state width="776" height="420" key="XDebugger.FullValuePopup/0.0.1536.824@0.0.1536.824" timestamp="1585512106997" />
+  </component>
+  <component name="XDebuggerManager">
+    <breakpoint-manager>
+      <breakpoints>
+        <line-breakpoint enabled="true" suspend="THREAD" type="python-line">
+          <url>file://$PROJECT_DIR$/seq2vec/util/util.py</url>
+          <line>46</line>
+          <option name="timeStamp" value="18" />
+        </line-breakpoint>
+      </breakpoints>
+    </breakpoint-manager>
   </component>
   <component name="com.intellij.coverage.CoverageDataManagerImpl">
-    <SUITE FILE_PATH="coverage/seq2vec$main.coverage" NAME="main Coverage Results" MODIFIED="1585154741988" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$" />
+    <SUITE FILE_PATH="coverage/seq2vec$util.coverage" NAME="util Coverage Results" MODIFIED="1585511249562" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$/seq2vec/util" />
+    <SUITE FILE_PATH="coverage/seq2vec$main.coverage" NAME="main Coverage Results" MODIFIED="1585572640384" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$" />
     <SUITE FILE_PATH="coverage/seq2vec$attention.coverage" NAME="attention Coverage Results" MODIFIED="1585386906956" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$" />
   </component>
 </project>
