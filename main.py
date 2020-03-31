@@ -352,7 +352,7 @@ def prepare_NPinter_feature(extract_only_posi=False, graph=False, deepmind=False
             protein = protein.upper()
             posi_set.add((RNA, protein))
             pro_set.add(protein)
-            if RNA in seq_dict and protein in protein_seq_dict: # has_keys() in python 2
+            if RNA in seq_dict and protein in protein_seq_dict:  # has_keys() in python 2
                 label.append(1)
                 # RNA_fea = [RNA_fea_dict[RNA][ind] for ind in fea_imp]
                 RNA_seq = seq_dict[RNA]
@@ -805,13 +805,23 @@ def main(X_data, y):
         all_performance_svm.append([acc, precision, sensitivity, specificity, MCC])
         print('---' * 50)
 
+        print('AdaBoost')
+        Ada = AdaBoostClassifier()
+        Ada.fit(train, train_label)
+        proba = Ada.predict_proba(test)[:, 1]
+        all_prob[1] = all_prob[1] + [val for val in proba]
+        y_pred_ada = transfer_label_from_prob(proba)
+        acc, precision, sensitivity, specificity, MCC = calculate_performance(len(real_labels), y_pred_ada, real_labels)
+        print(acc, precision, sensitivity, specificity, MCC)
+        all_performance_ada.append([acc, precision, sensitivity, specificity, MCC])
+        print('---' * 50)
+
         print('Random forest')
         rd = RandomForestClassifier(n_estimators=51)
         rd.fit(train, train_label)
         rd_proba = rd.predict_proba(test)[:, 1]
-        all_prob[1] = all_prob[1] + [val for val in rd_proba]
+        all_prob[2] = all_prob[2] + [val for val in rd_proba]
         y_pred_rf = transfer_label_from_prob(rd_proba)
-        # print proba
         acc, precision, sensitivity, specificity, MCC = calculate_performance(len(real_labels), y_pred_rf, real_labels)
         print(acc, precision, sensitivity, specificity, MCC)
         all_performance_rf.append([acc, precision, sensitivity, specificity, MCC])
@@ -828,45 +838,49 @@ def main(X_data, y):
         # all_performance_xgb.append([acc, precision, sensitivity, specificity, MCC])
         # print('---' * 50)
 
-        print('AdaBoost')
-        Ada = AdaBoostClassifier()
-        Ada.fit(train, train_label)
-        proba = Ada.predict_proba(test)[:, 1]
-        all_prob[2] = all_prob[2] + [val for val in proba]
-        y_pred_ada = transfer_label_from_prob(proba)
-        acc, precision, sensitivity, specificity, MCC = calculate_performance(len(real_labels), y_pred_ada, real_labels)
-        print(acc, precision, sensitivity, specificity, MCC)
-        all_performance_ada.append([acc, precision, sensitivity, specificity, MCC])
-        print('---' * 50)
-
     return all_performance_svm, all_performance_rf, all_performance_ada, all_labels, all_prob
 
 
 if __name__ == "__main__":
-    # pretrain seq2vec
-
     # prepare data
     dataset = "NPInter"
+    # get_data()方法待修改, 此时返回值为kmers特征，需加入seq2vec特征, 同时回传两种特征
     X, labels = get_data(dataset)
-    X = preprocess_data(X)
+    X = preprocess_data(X)  # 特征StandardScaler()归一化
     y = np.array(labels, dtype=int)
-    # print(y)
-    all_performance_svm, all_performance_rf, all_performance_ada, all_labels, all_prob = main(X, y)
 
-    print('mean performance of svm')
-    print(np.mean(np.array(all_performance_svm), axis=0))
+    # 以 kmer特征的 ‘X’ 调用main()方法
+    all_performance_svm1, all_performance_rf1, all_performance_ada1, all_labels, all_prob = main(X, y)
+
+    print('mean performance of svm using kmer feature')
+    print(np.mean(np.array(all_performance_svm1), axis=0))
     print('---' * 50)
-    print('mean performance of AdaBoost')
-    print(np, mean(np.array(all_performance_ada), axis=0))
+    print('mean performance of AdaBoost using kmer feature')
+    print(np, mean(np.array(all_performance_ada1), axis=0))
     print('---' * 50)
-    print('mean performance of Random forest')
-    print(np.mean(np.array(all_performance_rf), axis=0))
+    print('mean performance of Random forest using kmer feature')
+    print(np.mean(np.array(all_performance_rf1), axis=0))
+    print('---' * 50)
+
+    # 以seq2vec特征的 ‘X’ 再次调用main()
+    all_performance_svm2, all_performance_rf2, all_performance_ada2, all_labels2, all_prob2 = main(X, y)
+    print('mean performance of svm using bioseq2vec feature')
+    print(np.mean(np.array(all_performance_svm2), axis=0))
+    print('---' * 50)
+    print('mean performance of AdaBoost using bioseq2vec feature')
+    print(np, mean(np.array(all_performance_ada2), axis=0))
+    print('---' * 50)
+    print('mean performance of Random forest using bioseq2vec feature')
+    print(np.mean(np.array(all_performance_rf2), axis=0))
     print('---' * 50)
 
     Figure = plt.figure()
-    plot_roc_curve(all_labels, all_prob[0], 'SVM')
-    plot_roc_curve(all_labels, all_prob[2], 'AdaBoost')
-    plot_roc_curve(all_labels, all_prob[1], 'Random Forest')
+    plot_roc_curve(all_labels, all_prob[0], 'kmer_SVM')
+    plot_roc_curve(all_labels, all_prob[1], 'kmer_AdaBoost')
+    plot_roc_curve(all_labels, all_prob[2], 'kmer_Random Forest')
+    plot_roc_curve(all_labels2, all_prob2[0], 'bioseq2vec_SVM')
+    plot_roc_curve(all_labels2, all_prob2[1], 'bioseq2vec_AdaBoost')
+    plot_roc_curve(all_labels2, all_prob2[2], 'bioseq2vec_Random Forest')
     plt.plot([0, 1], [0, 1], 'k--')
     plt.xlim([-0.05, 1])
     plt.ylim([0, 1.05])
@@ -874,5 +888,5 @@ if __name__ == "__main__":
     plt.ylabel('True Positive Rate')
     plt.title('ROC')
     plt.legend(loc="lower right")
-    # plt.savefig(save_fig_dir + selected + '_' + class_type + '.tif')
+    plt.savefig('result/' + dataset + '_' + '.tif', )
     plt.show()

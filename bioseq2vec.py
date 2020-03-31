@@ -116,7 +116,7 @@ def pretrain(data, transformer, type):
     # data = np.array(data).tolist()
     transformer.fit(data)
     print("pretrain ends!")
-    transformer.save_model("pretrained model/seq2vec_" + str(type) + ".model")  # save pretrained model
+    transformer.save_model("pretrained models/seq2vec_" + str(type) + ".model")  # save pretrained model
 
     return
 
@@ -158,10 +158,10 @@ if __name__ == "__main__":
     transformer = Seq2VecR2RHash(
         max_index=10,
         max_length=100,
-        latent_size=200,
+        latent_size=20,
         embedding_size=200,
         encoding_size=100,
-        learning_rate=0.05
+        learning_rate=0.15
     )
 
     file_path = "data/corpus/gencode.v29.pc_translations.fa"
