@@ -1,21 +1,15 @@
-# Usage example
+# Usage
 
+Simple hash:
 ```python
 from seq2vec import Seq2VecHash
 
 transformer = Seq2VecHash(vector_length=100)
-train_seqs = [  # corpus for pretain
-    ['AGU', 'C', 'CG', ..., 'UUCGA'],
-    ['U', 'GAU',..., 'CGAU'],
-    ...,
+seqs = [
+    ['我', '有', '一個', '蘋果'],
+    ['我', '有', 'pineapple'],
 ]
-test_seqs =[
-    ['UAG','CCU',...,'AUA'],
-    ['UAG','GCCA',...,'GACU'],
-    ...,
-]
-transformer.fit(train_seqs)
-result = transformer.transform(test_seqs)
+result = transformer.transform(seqs)
 print(result)
 '''
 array([[ 0.,  0.,  0.,  0.,  0.,  0.,  0.,  0.,  0.,  0.,  0.,  0.,  0.,
@@ -36,6 +30,125 @@ array([[ 0.,  0.,  0.,  0.,  0.,  0.,  0.,  0.,  0.,  0.,  0.,  0.,  0.,
          0.,  0.,  0.,  0.,  0.,  0.,  0.,  0.,  0.]])
 '''
 ```
+
+Sequence-to-sequence auto-encoder:
+
+* LSTM to LSTM auto-encoder with word embedding (RNN to RNN architecture)
+
+  ```python
+  from seq2vec.word2vec import GensimWord2vec
+  from seq2vec import Seq2VecR2RWord
+  
+  # load Gensim word2vec from word2vec_model_path
+  word2vec = GensimWord2vec(word2vec_model_path)
+  
+  transformer = Seq2VecR2RWord(
+        word2vec_model=word2vec,
+        max_length=20,
+        latent_size=300,
+        encoding_size=300,
+        learning_rate=0.05
+  )
+  
+  train_seq = [
+    ['我', '有', '一個', '蘋果'],
+    ['我', '有', '筆'],
+    ['一個', '鳳梨'],
+  ]
+  test_seq = [
+    ['我', '愛', '吃', '鳳梨'],
+  ]
+  transformer.fit(train_seq)
+  result = transformer.transform(test_seq)
+  ```
+  
+* CNN to LSTM auto-encoder with word embedding (CNN to RNN architecture)
+
+  ```python
+  from seq2vec.word2vec import GensimWord2vec
+  from seq2vec import Seq2VecC2RWord
+  
+  # load Gensim word2vec from word2vec_model_path
+  word2vec = GensimWord2vec(word2vec_model_path)
+  
+  transformer = Seq2VecC2RWord(
+        word2vec_model=word2vec,
+        max_length=20,
+        latent_size=300,
+        conv_size=5,
+        channel_size=10,
+        learning_rate=0.05,
+  )
+  
+  train_seq = [
+    ['我', '有', '一個', '蘋果'],
+    ['我', '有', '筆'],
+    ['一個', '鳳梨'],
+  ]
+  test_seq = [
+    ['我', '愛', '吃', '鳳梨'],
+  ]
+  transformer.fit(train_seq)
+  result = transformer.transform(test_seq)
+  ```
+
+* CNN to LSTM auto-encoder with char embedding (CNN to RNN architecture)
+
+  ```python
+  from seq2vec.word2vec import GensimWord2vec
+  from seq2vec import Seq2VecC2RChar
+  
+  # load Gensim word2vec from word2vec_model_path
+  word2vec = GensimWord2vec(word2vec_model_path)
+  
+  transformer = Seq2VecC2RChar(
+        word2vec_model=word2vec,
+        max_index=1000,
+        max_length=20,
+        embedding_size=200,
+        latent_size=200,
+        learning_rate=0.05,
+        channel_size=10,
+        conv_size=5
+  )
+  
+  train_seq = [
+    ['我', '有', '一個', '蘋果'],
+    ['我', '有', '筆'],
+    ['一個', '鳳梨'],
+  ]
+  test_seq = [
+    ['我', '愛', '吃', '鳳梨'],
+  ]
+  transformer.fit(train_seq)
+  result = transformer.transform(test_seq)
+  ```
+  
+* LSTM to LSTM auto-encoder with hash word embedding (RNN to RNN architecture)
+
+ ```python
+ from seq2vec import Seq2VecR2RHash
+
+ transformer = Seq2VecR2RHash(
+     max_index=1000,
+     max_length=10,
+     latent_size=20,
+     embedding_size=200,
+     encoding_size=300,
+     learning_rate=0.05
+ )
+
+ train_seq = [
+     ['我', '有', '一個', '蘋果'],
+     ['我', '有', '筆'],
+     ['一個', '鳳梨'], 
+ ]
+ test_seq = [
+     ['我', '愛', '吃', '鳳梨'],
+ ]
+ transformer.fit(train_seq)
+ result = transformer.transform(test_seq)
+ ```
 
 ### Training with generator on file
 

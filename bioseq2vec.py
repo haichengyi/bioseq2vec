@@ -1,3 +1,5 @@
+from numpy import shape
+import numpy as np
 from seq2vec import Seq2VecR2RHash
 import argparse
 
@@ -121,38 +123,6 @@ def pretrain(data, transformer, type):
     return
 
 
-def prepare_seq2vec_feature():
-    transformer_rna = Seq2VecR2RHash(
-        max_index=10,
-        max_length=10000,
-        latent_size=200,
-        embedding_size=200,
-        encoding_size=100,
-        learning_rate=0.05
-    )
-    transformer_protein = Seq2VecR2RHash(
-        max_index=10,
-        max_length=10000,
-        latent_size=200,
-        embedding_size=200,
-        encoding_size=100,
-        learning_rate=0.05
-    )
-    filename_rna = 'data/corpus/gencode.v29.lncRNA_transcripts.fa'
-    filename_protein = 'data/corpus/gencode.v29.pc_translations.fa'
-    filename = [filename_rna, filename_protein]
-    # convert data
-    rna, protein = data_convert(filename)
-    # rna = read_fasta_file(filename_rna)
-    # protein = read_fasta_file(filename_protein)
-
-    # pretrain seq2vec
-    pretrain(rna, transformer_rna, rna)
-    pretrain(protein, transformer_protein, protein)
-
-    return
-
-
 if __name__ == "__main__":
     # input_file = sys.argv[1]
     transformer = Seq2VecR2RHash(
@@ -164,10 +134,16 @@ if __name__ == "__main__":
         learning_rate=0.15
     )
 
-    file_path = "data/corpus/gencode.v29.pc_translations.fa"
+    file_path = "data/corpus/gencode.v33.lncRNA_transcripts.fa"
     seq_dict = read_fasta_file(file_path)
     sequences = []
     for seq in seq_dict.values():
         sequences.append(list(seq))  # list('AAAU') -> 'A','A','A','U'
     # print(sequences)
-    pretrain(sequences, transformer, "protein")
+    pretrain(sequences, transformer, "rna")
+
+    ###################   test code ###################
+    # transformer.load_customed_model(file_path='pretrained models/seq2vec_rna.model')
+    # fea = transformer.transform(['AUC'])
+    # print(fea)
+    # print(fea.reshape(-1))

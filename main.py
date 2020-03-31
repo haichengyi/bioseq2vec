@@ -519,6 +519,12 @@ def prepare_RPI2241_369_feature(rna_fasta_file, data_file, protein_fasta_file, s
 
 def prepare_RPI488_feature(seperate=False, chem_fea=True):
     print('RPI488 dataset')
+
+    seq2vec_rna = Seq2VecR2RHash()
+    seq2vec_pro = Seq2VecR2RHash()
+    seq2vec_rna.load_customed_model("pretrained models/seq2vec_rna.model")  # maybe this way is wrong
+    seq2vec_pro.load_customed_model("pretrained models/seq2vec_protein.model")
+
     interaction_pair = {}
     RNA_seq_dict = {}
     protein_seq_dict = {}
@@ -542,42 +548,45 @@ def prepare_RPI488_feature(seperate=False, chem_fea=True):
                 else:
                     RNA_seq_dict[RNA] = seq
                 index = index + 1
-    # name_list = read_name_from_lncRNA_fasta('ncRNA-protein/lncRNA_RNA.fa')
     groups = ['AGV', 'ILFP', 'YMTS', 'HNQW', 'RK', 'DE', 'C']
     group_dict = TransDict_from_list(groups)
     protein_tris = get_3_protein_trids()
     tris = get_4_trids()
-    # tris3 = get_3_trids()
-    train = []
+
+    train = {}  # Changed
+    train[0] = []  # for kmer feature
+    train[1] = []  # for seq2vec feature
+
     label = []
-    chem_fea = []
     for key, val in interaction_pair.items():  # iteritems() removed in python 3
         protein, RNA = key[0], key[1]
-        # pdb.set_trace()
         if RNA in RNA_seq_dict and protein in protein_seq_dict:
             # python2: protein_fea_dict.has_key(protein) and RNA_fea_dict.has_key(RNA):
             label.append(val)
             RNA_seq = RNA_seq_dict[RNA]
-            protein_seq = translate_sequence(protein_seq_dict[protein], group_dict)
+            protein_seq = protein_seq_dict[protein]
 
-            # pdb.set_trace()
+            # seq2vec feature
+            RNA_seq2vec_fea = seq2vec_rna.transform([list(RNA_seq)])  # list(RNA_seq)
+            RNA_seq2vec_fea = RNA_seq2vec_fea.reshape(-1)  # [[]] -> []  2D array to 1D array
+            protein_seq2vec_fea = seq2vec_pro.transform([list(protein_seq)])  # list(protein_seq)
+            protein_seq2vec_fea = protein_seq2vec_fea.reshape(-1)  # [[]] -> []
+
+            protein_seq = translate_sequence(protein_seq_dict[protein], group_dict)  # reduced Alphabet
             RNA_tri_fea = get_k_nucleotide_composition(tris, RNA_seq)
             protein_tri_fea = get_k_nucleotide_composition(protein_tris, protein_seq)
-            # RNA_tri3_fea = get_4_nucleotide_composition(tris3, RNA_seq, pythoncount =False)
-            # RNA_fea = [RNA_fea_dict[RNA][ind] for ind in fea_imp]
-            # tmp_fea = protein_fea_dict[protein] + tri_fea #+ RNA_fea_dict[RNA]
             if seperate:
                 tmp_fea = (protein_tri_fea, RNA_tri_fea)
-                # chem_tmp_fea = (protein_fea_dict[protein], RNA_fea_dict[RNA])
+                tmp_2vec = (protein_seq2vec_fea, RNA_seq2vec_fea)
             else:
                 tmp_fea = protein_tri_fea + RNA_tri_fea
-                # chem_tmp_fea = protein_fea_dict[protein] + RNA_fea_dict[RNA]
-            train.append(tmp_fea)
-            # chem_fea.append(chem_tmp_fea)
+                tmp_2vec = protein_seq2vec_fea + RNA_seq2vec_fea
+            train[0].append(tmp_fea)
+            train[1].append(tmp_2vec)
         else:
             print(RNA, protein)
 
-    return np.array(train), label
+    return train, label
 
 
 def prepare_RPIntDB_feature(seperate=False, chem_fea=True):
@@ -757,6 +766,7 @@ def transfer_label_from_prob(proba):
 
 
 def main(X_data, y):
+    print(shape(X_data))
     num_cross_val = 5  # 5-fold
     all_performance_svm = []
     all_performance_rf = []
@@ -838,19 +848,24 @@ def main(X_data, y):
         # all_performance_xgb.append([acc, precision, sensitivity, specificity, MCC])
         # print('---' * 50)
 
-    return all_performance_svm, all_performance_rf, all_performance_ada, all_labels, all_prob
+    return all_performance_svm, all_performance_ada, all_performance_rf, all_labels, all_prob
 
 
 if __name__ == "__main__":
     # prepare data
     dataset = "RPI488"
-    # get_data()方法待修改, 此时返回值为kmers特征，需加入seq2vec特征, 同时回传两种特征
+    # get_data()方法同时回传kmer, seq2vec特征
     X, labels = get_data(dataset)
-    X = preprocess_data(X)  # 特征StandardScaler()归一化
+    X1, X2 = X[0], X[1]
+    X1 = preprocess_data(X1)  # 特征StandardScaler()归一化
+    X2 = preprocess_data(X2)
     y = np.array(labels, dtype=int)
 
-    # 以 kmer特征的 ‘X’ 调用main()方法
-    all_performance_svm1, all_performance_rf1, all_performance_ada1, all_labels, all_prob = main(X, y)
+    # 以 kmer特征的 ‘X1’ 调用main()方法
+    all_performance_svm1, all_performance_ada1, all_performance_rf1, all_labels, all_prob = main(X1, y)
+    # 以seq2vec特征的 ‘X2’ 再次调用main()
+    all_performance_svm2, all_performance_ada2, all_performance_rf2, all_labels2, all_prob2 = main(X2, y)
+
     print('mean performance of svm using kmer feature')
     print(np.mean(np.array(all_performance_svm1), axis=0))
     print('---' * 50)
@@ -861,25 +876,23 @@ if __name__ == "__main__":
     print(np.mean(np.array(all_performance_rf1), axis=0))
     print('---' * 50)
 
-    # 以seq2vec特征的 ‘X’ 再次调用main()
-    # all_performance_svm2, all_performance_rf2, all_performance_ada2, all_labels2, all_prob2 = main(X, y)
-    # print('mean performance of svm using bioseq2vec feature')
-    # print(np.mean(np.array(all_performance_svm2), axis=0))
-    # print('---' * 50)
-    # print('mean performance of AdaBoost using bioseq2vec feature')
-    # print(np, mean(np.array(all_performance_ada2), axis=0))
-    # print('---' * 50)
-    # print('mean performance of Random forest using bioseq2vec feature')
-    # print(np.mean(np.array(all_performance_rf2), axis=0))
-    # print('---' * 50)
+    print('mean performance of svm using bioseq2vec feature')
+    print(np.mean(np.array(all_performance_svm2), axis=0))
+    print('---' * 50)
+    print('mean performance of AdaBoost using bioseq2vec feature')
+    print(np, mean(np.array(all_performance_ada2), axis=0))
+    print('---' * 50)
+    print('mean performance of Random forest using bioseq2vec feature')
+    print(np.mean(np.array(all_performance_rf2), axis=0))
+    print('---' * 50)
 
     Figure = plt.figure()
     plot_roc_curve(all_labels, all_prob[0], 'kmer_SVM')
     plot_roc_curve(all_labels, all_prob[1], 'kmer_AdaBoost')
     plot_roc_curve(all_labels, all_prob[2], 'kmer_Random Forest')
-    # plot_roc_curve(all_labels2, all_prob2[0], 'bioseq2vec_SVM')
-    # plot_roc_curve(all_labels2, all_prob2[1], 'bioseq2vec_AdaBoost')
-    # plot_roc_curve(all_labels2, all_prob2[2], 'bioseq2vec_Random Forest')
+    plot_roc_curve(all_labels2, all_prob2[0], 'bioseq2vec_SVM')
+    plot_roc_curve(all_labels2, all_prob2[1], 'bioseq2vec_AdaBoost')
+    plot_roc_curve(all_labels2, all_prob2[2], 'bioseq2vec_Random Forest')
     plt.plot([0, 1], [0, 1], 'k--')
     plt.xlim([-0.05, 1])
     plt.ylim([0, 1.05])
