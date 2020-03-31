@@ -1,30 +1,16 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project version="4">
   <component name="ChangeListManager">
-    <list default="true" id="b241573a-97f6-495e-8182-c9031605cfa9" name="Default Changelist" comment="" />
+    <list default="true" id="8ecf6b28-2953-43b3-8ee0-3f9d13bb6dac" name="Default Changelist" comment="" />
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
     <option name="HIGHLIGHT_NON_ACTIVE_CHANGELIST" value="false" />
     <option name="LAST_RESOLUTION" value="IGNORE" />
   </component>
-  <component name="DatabaseView">
-    <option name="SHOW_INTERMEDIATE" value="true" />
-    <option name="GROUP_DATA_SOURCES" value="true" />
-    <option name="GROUP_SCHEMA" value="true" />
-    <option name="GROUP_CONTENTS" value="false" />
-    <option name="SORT_POSITIONED" value="false" />
-    <option name="SHOW_EMPTY_GROUPS" value="false" />
-    <option name="AUTO_SCROLL_FROM_SOURCE" value="false" />
-    <option name="HIDDEN_KINDS">
-      <set />
-    </option>
-    <expand />
-    <select />
-  </component>
   <component name="Git.Settings">
     <option name="RECENT_GIT_ROOT_PATH" value="$PROJECT_DIR$" />
   </component>
-  <component name="ProjectId" id="1ZczRJ8ur5ciW8sJId7TN1PCvp7" />
+  <component name="ProjectId" id="1ZsynjTTJc91qxoR9khKO7cTJZh" />
   <component name="ProjectLevelVcsManager" settingsEditedManually="true" />
   <component name="ProjectViewState">
     <option name="hideEmptyMiddlePackages" value="true" />
@@ -34,33 +20,10 @@
   <component name="PropertiesComponent">
     <property name="RunOnceActivity.ShowReadmeOnStart" value="true" />
     <property name="WebServerToolWindowFactoryState" value="false" />
-    <property name="last_opened_file_path" value="$PROJECT_DIR$" />
-    <property name="settings.editor.selected.configurable" value="project.propVCSSupport.Mappings" />
+    <property name="settings.editor.selected.configurable" value="com.jetbrains.python.configuration.PyActiveSdkModuleConfigurable" />
   </component>
-  <component name="RunManager" selected="Python.main">
-    <configuration default="true" type="PythonConfigurationType" factoryName="Python">
-      <module name="seq2vec" />
-      <option name="INTERPRETER_OPTIONS" value="" />
-      <option name="PARENT_ENVS" value="true" />
-      <envs>
-        <env name="PYTHONUNBUFFERED" value="1" />
-      </envs>
-      <option name="SDK_HOME" value="" />
-      <option name="WORKING_DIRECTORY" value="" />
-      <option name="IS_MODULE_SDK" value="false" />
-      <option name="ADD_CONTENT_ROOTS" value="true" />
-      <option name="ADD_SOURCE_ROOTS" value="true" />
-      <EXTENSION ID="PythonCoverageRunConfigurationExtension" runner="coverage.py" />
-      <option name="SCRIPT_NAME" value="" />
-      <option name="PARAMETERS" value="" />
-      <option name="SHOW_COMMAND_LINE" value="true" />
-      <option name="EMULATE_TERMINAL" value="false" />
-      <option name="MODULE_MODE" value="false" />
-      <option name="REDIRECT_INPUT" value="false" />
-      <option name="INPUT_FILE" value="" />
-      <method v="2" />
-    </configuration>
-    <configuration name="attention" type="PythonConfigurationType" factoryName="Python" temporary="true" nameIsGenerated="true">
+  <component name="RunManager">
+    <configuration name="bioseq2vec" type="PythonConfigurationType" factoryName="Python" temporary="true" nameIsGenerated="true">
       <module name="seq2vec" />
       <option name="INTERPRETER_OPTIONS" value="" />
       <option name="PARENT_ENVS" value="true" />
@@ -73,53 +36,9 @@
       <option name="ADD_CONTENT_ROOTS" value="true" />
       <option name="ADD_SOURCE_ROOTS" value="true" />
       <EXTENSION ID="PythonCoverageRunConfigurationExtension" runner="coverage.py" />
-      <option name="SCRIPT_NAME" value="$PROJECT_DIR$/attention.py" />
+      <option name="SCRIPT_NAME" value="$PROJECT_DIR$/bioseq2vec.py" />
       <option name="PARAMETERS" value="" />
       <option name="SHOW_COMMAND_LINE" value="false" />
-      <option name="EMULATE_TERMINAL" value="false" />
-      <option name="MODULE_MODE" value="false" />
-      <option name="REDIRECT_INPUT" value="false" />
-      <option name="INPUT_FILE" value="" />
-      <method v="2" />
-    </configuration>
-    <configuration name="main" type="PythonConfigurationType" factoryName="Python" temporary="true" nameIsGenerated="true">
-      <module name="seq2vec" />
-      <option name="INTERPRETER_OPTIONS" value="" />
-      <option name="PARENT_ENVS" value="true" />
-      <envs>
-        <env name="PYTHONUNBUFFERED" value="1" />
-      </envs>
-      <option name="SDK_HOME" value="" />
-      <option name="WORKING_DIRECTORY" value="$PROJECT_DIR$" />
-      <option name="IS_MODULE_SDK" value="true" />
-      <option name="ADD_CONTENT_ROOTS" value="true" />
-      <option name="ADD_SOURCE_ROOTS" value="true" />
-      <EXTENSION ID="PythonCoverageRunConfigurationExtension" runner="coverage.py" />
-      <option name="SCRIPT_NAME" value="$PROJECT_DIR$/main.py" />
-      <option name="PARAMETERS" value="" />
-      <option name="SHOW_COMMAND_LINE" value="false" />
-      <option name="EMULATE_TERMINAL" value="false" />
-      <option name="MODULE_MODE" value="false" />
-      <option name="REDIRECT_INPUT" value="false" />
-      <option name="INPUT_FILE" value="" />
-      <method v="2" />
-    </configuration>
-    <configuration name="util" type="PythonConfigurationType" factoryName="Python" temporary="true" nameIsGenerated="true">
-      <module name="seq2vec" />
-      <option name="INTERPRETER_OPTIONS" value="" />
-      <option name="PARENT_ENVS" value="true" />
-      <envs>
-        <env name="PYTHONUNBUFFERED" value="1" />
-      </envs>
-      <option name="SDK_HOME" value="" />
-      <option name="WORKING_DIRECTORY" value="$PROJECT_DIR$/seq2vec/util" />
-      <option name="IS_MODULE_SDK" value="true" />
-      <option name="ADD_CONTENT_ROOTS" value="true" />
-      <option name="ADD_SOURCE_ROOTS" value="true" />
-      <EXTENSION ID="PythonCoverageRunConfigurationExtension" runner="coverage.py" />
-      <option name="SCRIPT_NAME" value="$PROJECT_DIR$/seq2vec/util/util.py" />
-      <option name="PARAMETERS" value="" />
-      <option name="SHOW_COMMAND_LINE" value="true" />
       <option name="EMULATE_TERMINAL" value="false" />
       <option name="MODULE_MODE" value="false" />
       <option name="REDIRECT_INPUT" value="false" />
@@ -128,9 +47,7 @@
     </configuration>
     <recent_temporary>
       <list>
-        <item itemvalue="Python.main" />
-        <item itemvalue="Python.util" />
-        <item itemvalue="Python.attention" />
+        <item itemvalue="Python.bioseq2vec" />
       </list>
     </recent_temporary>
   </component>
@@ -139,20 +56,14 @@
   </component>
   <component name="TaskManager">
     <task active="true" id="Default" summary="Default task">
-      <changelist id="b241573a-97f6-495e-8182-c9031605cfa9" name="Default Changelist" comment="" />
-      <created>1585153160401</created>
+      <changelist id="8ecf6b28-2953-43b3-8ee0-3f9d13bb6dac" name="Default Changelist" comment="" />
+      <created>1585642265319</created>
       <option name="number" value="Default" />
       <option name="presentableId" value="Default" />
-      <updated>1585153160401</updated>
-      <workItem from="1585153164746" duration="283000" />
-      <workItem from="1585153590558" duration="1193000" />
-      <workItem from="1585326476760" duration="10000" />
-      <workItem from="1585326525895" duration="1876000" />
-      <workItem from="1585382481272" duration="5632000" />
-      <workItem from="1585483911183" duration="2808000" />
-      <workItem from="1585486736057" duration="18719000" />
-      <workItem from="1585510472373" duration="5033000" />
-      <workItem from="1585553573576" duration="15582000" />
+      <updated>1585642265319</updated>
+      <workItem from="1585642269253" duration="61000" />
+      <workItem from="1585643841075" duration="32000" />
+      <workItem from="1585643884266" duration="969000" />
     </task>
     <servers />
   </component>
@@ -165,69 +76,28 @@
     </ignored-roots>
   </component>
   <component name="WindowStateProjectService">
-    <state x="361" y="74" key="#Notifications" timestamp="1585154168707">
+    <state width="1493" height="210" key="GridCell.Tab.0.bottom" timestamp="1585644254065">
       <screen x="0" y="0" width="1536" height="824" />
     </state>
-    <state x="361" y="74" key="#Notifications/0.0.1536.824@0.0.1536.824" timestamp="1585154168707" />
-    <state x="223" y="70" key="#com.intellij.execution.impl.EditConfigurationsDialog" timestamp="1585153429307">
+    <state width="1493" height="210" key="GridCell.Tab.0.bottom/0.0.1536.824@0.0.1536.824" timestamp="1585644254065" />
+    <state width="1493" height="210" key="GridCell.Tab.0.center" timestamp="1585644254065">
       <screen x="0" y="0" width="1536" height="824" />
     </state>
-    <state x="223" y="70" key="#com.intellij.execution.impl.EditConfigurationsDialog/0.0.1536.824@0.0.1536.824" timestamp="1585153429307" />
-    <state width="1493" height="216" key="GridCell.Tab.0.bottom" timestamp="1585572640411">
+    <state width="1493" height="210" key="GridCell.Tab.0.center/0.0.1536.824@0.0.1536.824" timestamp="1585644254065" />
+    <state width="1493" height="210" key="GridCell.Tab.0.left" timestamp="1585644254064">
       <screen x="0" y="0" width="1536" height="824" />
     </state>
-    <state width="1493" height="216" key="GridCell.Tab.0.bottom/0.0.1536.824@0.0.1536.824" timestamp="1585572640411" />
-    <state width="1493" height="216" key="GridCell.Tab.0.center" timestamp="1585572640411">
+    <state width="1493" height="210" key="GridCell.Tab.0.left/0.0.1536.824@0.0.1536.824" timestamp="1585644254064" />
+    <state width="1493" height="210" key="GridCell.Tab.0.right" timestamp="1585644254065">
       <screen x="0" y="0" width="1536" height="824" />
     </state>
-    <state width="1493" height="216" key="GridCell.Tab.0.center/0.0.1536.824@0.0.1536.824" timestamp="1585572640411" />
-    <state width="1493" height="216" key="GridCell.Tab.0.left" timestamp="1585572640410">
+    <state width="1493" height="210" key="GridCell.Tab.0.right/0.0.1536.824@0.0.1536.824" timestamp="1585644254065" />
+    <state x="272" y="57" key="SettingsEditor" timestamp="1585642328951">
       <screen x="0" y="0" width="1536" height="824" />
     </state>
-    <state width="1493" height="216" key="GridCell.Tab.0.left/0.0.1536.824@0.0.1536.824" timestamp="1585572640410" />
-    <state width="1493" height="216" key="GridCell.Tab.0.right" timestamp="1585572640411">
-      <screen x="0" y="0" width="1536" height="824" />
-    </state>
-    <state width="1493" height="216" key="GridCell.Tab.0.right/0.0.1536.824@0.0.1536.824" timestamp="1585572640411" />
-    <state width="1493" height="220" key="GridCell.Tab.1.bottom" timestamp="1585571492467">
-      <screen x="0" y="0" width="1536" height="824" />
-    </state>
-    <state width="1493" height="220" key="GridCell.Tab.1.bottom/0.0.1536.824@0.0.1536.824" timestamp="1585571492467" />
-    <state width="1493" height="220" key="GridCell.Tab.1.center" timestamp="1585571492467">
-      <screen x="0" y="0" width="1536" height="824" />
-    </state>
-    <state width="1493" height="220" key="GridCell.Tab.1.center/0.0.1536.824@0.0.1536.824" timestamp="1585571492467" />
-    <state width="1493" height="220" key="GridCell.Tab.1.left" timestamp="1585571492467">
-      <screen x="0" y="0" width="1536" height="824" />
-    </state>
-    <state width="1493" height="220" key="GridCell.Tab.1.left/0.0.1536.824@0.0.1536.824" timestamp="1585571492467" />
-    <state width="1493" height="220" key="GridCell.Tab.1.right" timestamp="1585571492467">
-      <screen x="0" y="0" width="1536" height="824" />
-    </state>
-    <state width="1493" height="220" key="GridCell.Tab.1.right/0.0.1536.824@0.0.1536.824" timestamp="1585571492467" />
-    <state x="272" y="57" key="SettingsEditor" timestamp="1585154548387">
-      <screen x="0" y="0" width="1536" height="824" />
-    </state>
-    <state x="272" y="57" key="SettingsEditor/0.0.1536.824@0.0.1536.824" timestamp="1585154548387" />
-    <state width="776" height="420" key="XDebugger.FullValuePopup" timestamp="1585512106997">
-      <screen x="0" y="0" width="1536" height="824" />
-    </state>
-    <state width="776" height="420" key="XDebugger.FullValuePopup/0.0.1536.824@0.0.1536.824" timestamp="1585512106997" />
-  </component>
-  <component name="XDebuggerManager">
-    <breakpoint-manager>
-      <breakpoints>
-        <line-breakpoint enabled="true" suspend="THREAD" type="python-line">
-          <url>file://$PROJECT_DIR$/seq2vec/util/util.py</url>
-          <line>46</line>
-          <option name="timeStamp" value="18" />
-        </line-breakpoint>
-      </breakpoints>
-    </breakpoint-manager>
+    <state x="272" y="57" key="SettingsEditor/0.0.1536.824@0.0.1536.824" timestamp="1585642328951" />
   </component>
   <component name="com.intellij.coverage.CoverageDataManagerImpl">
-    <SUITE FILE_PATH="coverage/seq2vec$util.coverage" NAME="util Coverage Results" MODIFIED="1585511249562" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$/seq2vec/util" />
-    <SUITE FILE_PATH="coverage/seq2vec$main.coverage" NAME="main Coverage Results" MODIFIED="1585572640384" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$" />
-    <SUITE FILE_PATH="coverage/seq2vec$attention.coverage" NAME="attention Coverage Results" MODIFIED="1585386906956" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$" />
+    <SUITE FILE_PATH="coverage/seq2vec$bioseq2vec.coverage" NAME="bioseq2vec Coverage Results" MODIFIED="1585644254037" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$" />
   </component>
 </project>

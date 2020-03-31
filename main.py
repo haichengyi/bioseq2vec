@@ -203,7 +203,7 @@ def pretrain(data, transformer):
     else:
         transformer.save_model("attention_pc.h5")'''
 
-    return 0
+    return transformer
 
 
 def generate_dic(filename):
@@ -274,7 +274,7 @@ def prepare_RPI13254_feature(seperate=False, extract_only_posi=False, indep_test
     # pdb.set_trace()
     for val in positive_pairs:
         protein, RNA = val
-        if RNA_seq_dict.has_key(RNA) and protein_seq_dict.has_key(protein):
+        if RNA in RNA_seq_dict and protein in protein_seq_dict:
             label.append(1)
             # RNA_fea = [RNA_fea_dict[RNA][ind] for ind in fea_imp]
             RNA_seq = RNA_seq_dict[RNA]
@@ -294,7 +294,7 @@ def prepare_RPI13254_feature(seperate=False, extract_only_posi=False, indep_test
     if not extract_only_posi:
         for val in negative_pairs:
             protein, RNA = val
-            if RNA_seq_dict.has_key(RNA) and protein_seq_dict.has_key(protein):
+            if RNA in RNA_seq_dict and protein in protein_seq_dict:
                 label.append(0)
                 # RNA_fea = [RNA_fea_dict[RNA][ind] for ind in fea_imp]
                 RNA_seq = RNA_seq_dict[RNA]
@@ -352,7 +352,7 @@ def prepare_NPinter_feature(extract_only_posi=False, graph=False, deepmind=False
             protein = protein.upper()
             posi_set.add((RNA, protein))
             pro_set.add(protein)
-            if RNA in seq_dict and protein in protein_seq_dict:
+            if RNA in seq_dict and protein in protein_seq_dict: # has_keys() in python 2
                 label.append(1)
                 # RNA_fea = [RNA_fea_dict[RNA][ind] for ind in fea_imp]
                 RNA_seq = seq_dict[RNA]
