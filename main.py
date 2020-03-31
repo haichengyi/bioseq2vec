@@ -843,7 +843,7 @@ def main(X_data, y):
 
 if __name__ == "__main__":
     # prepare data
-    dataset = "NPInter"
+    dataset = "RPI488"
     # get_data()方法待修改, 此时返回值为kmers特征，需加入seq2vec特征, 同时回传两种特征
     X, labels = get_data(dataset)
     X = preprocess_data(X)  # 特征StandardScaler()归一化
@@ -851,7 +851,6 @@ if __name__ == "__main__":
 
     # 以 kmer特征的 ‘X’ 调用main()方法
     all_performance_svm1, all_performance_rf1, all_performance_ada1, all_labels, all_prob = main(X, y)
-
     print('mean performance of svm using kmer feature')
     print(np.mean(np.array(all_performance_svm1), axis=0))
     print('---' * 50)
@@ -863,24 +862,24 @@ if __name__ == "__main__":
     print('---' * 50)
 
     # 以seq2vec特征的 ‘X’ 再次调用main()
-    all_performance_svm2, all_performance_rf2, all_performance_ada2, all_labels2, all_prob2 = main(X, y)
-    print('mean performance of svm using bioseq2vec feature')
-    print(np.mean(np.array(all_performance_svm2), axis=0))
-    print('---' * 50)
-    print('mean performance of AdaBoost using bioseq2vec feature')
-    print(np, mean(np.array(all_performance_ada2), axis=0))
-    print('---' * 50)
-    print('mean performance of Random forest using bioseq2vec feature')
-    print(np.mean(np.array(all_performance_rf2), axis=0))
-    print('---' * 50)
+    # all_performance_svm2, all_performance_rf2, all_performance_ada2, all_labels2, all_prob2 = main(X, y)
+    # print('mean performance of svm using bioseq2vec feature')
+    # print(np.mean(np.array(all_performance_svm2), axis=0))
+    # print('---' * 50)
+    # print('mean performance of AdaBoost using bioseq2vec feature')
+    # print(np, mean(np.array(all_performance_ada2), axis=0))
+    # print('---' * 50)
+    # print('mean performance of Random forest using bioseq2vec feature')
+    # print(np.mean(np.array(all_performance_rf2), axis=0))
+    # print('---' * 50)
 
     Figure = plt.figure()
     plot_roc_curve(all_labels, all_prob[0], 'kmer_SVM')
     plot_roc_curve(all_labels, all_prob[1], 'kmer_AdaBoost')
     plot_roc_curve(all_labels, all_prob[2], 'kmer_Random Forest')
-    plot_roc_curve(all_labels2, all_prob2[0], 'bioseq2vec_SVM')
-    plot_roc_curve(all_labels2, all_prob2[1], 'bioseq2vec_AdaBoost')
-    plot_roc_curve(all_labels2, all_prob2[2], 'bioseq2vec_Random Forest')
+    # plot_roc_curve(all_labels2, all_prob2[0], 'bioseq2vec_SVM')
+    # plot_roc_curve(all_labels2, all_prob2[1], 'bioseq2vec_AdaBoost')
+    # plot_roc_curve(all_labels2, all_prob2[2], 'bioseq2vec_Random Forest')
     plt.plot([0, 1], [0, 1], 'k--')
     plt.xlim([-0.05, 1])
     plt.ylim([0, 1.05])
@@ -888,5 +887,5 @@ if __name__ == "__main__":
     plt.ylabel('True Positive Rate')
     plt.title('ROC')
     plt.legend(loc="lower right")
-    plt.savefig('result/' + dataset + '_' + '.tif', )
+    plt.savefig('result/' + dataset + '.tif', dpi=300)  # .svg
     plt.show()
