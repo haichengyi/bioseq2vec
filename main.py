@@ -15,40 +15,7 @@ from sklearn.linear_model import LogisticRegression
 from sklearn.ensemble import AdaBoostClassifier, RandomForestClassifier
 from xgboost import XGBClassifier
 from catboost import CatBoostClassifier
-from sklearn.svm import NuSVC, SVC
-
-transformer_rna = Seq2VecR2RHash(
-    max_index=10,
-    max_length=10000,
-    latent_size=200,
-    embedding_size=200,
-    encoding_size=100,
-    learning_rate=0.05
-)
-transformer_protein = Seq2VecR2RHash(
-    max_index=10,
-    max_length=10000,
-    latent_size=200,
-    embedding_size=200,
-    encoding_size=100,
-    learning_rate=0.05
-)
-
-
-def prepare_seq2vec_feature():
-    filename_rna = 'data/corpus/gencode.v29.lncRNA_transcripts.fa'
-    filename_protein = 'data/corpus/gencode.v29.pc_translations.fa'
-    filename = [filename_rna, filename_protein]
-    # convert data
-    rna, protein = data_convert(filename)
-    # rna = read_fasta_file(filename_rna)
-    # protein = read_fasta_file(filename_protein)
-
-    # pretrain seq2vec
-    pretrain(rna, transformer_rna)
-    pretrain(protein, transformer_protein)
-
-    return
+from sklearn.svm import SVC
 
 
 def get_4_trids():
@@ -256,7 +223,25 @@ def read_orf_interaction(interaction_file):
     return interacton_pair
 
 
+def get_words(k, seq):
+    seq_len = len(seq)
+    words = []
+
+    # tmp_fea = [0] * len(tris)
+    for x in range(len(seq) + 1 - k):
+        kmer = seq[x:x + k]
+        words.append(kmer)
+    # tri_feature = [float(val)/seq_len for val in tmp_fea]
+    # pdb.set_trace()
+    return words
+
+
 def prepare_RPI13254_feature(seperate=False, extract_only_posi=False, indep_test=False):
+    seq2vec_rna = Seq2VecR2RHash()
+    seq2vec_pro = Seq2VecR2RHash()
+    seq2vec_rna.load_customed_model("pretrained models/seq2vec_rna.model")
+    seq2vec_pro.load_customed_model("pretrained models/seq2vec_protein.model")
+
     protein_seq_dict = read_orf_seq('data/ncRNA-protein/RPI13254_RNA_seq.fa')
     RNA_seq_dict = read_orf_seq('data/ncRNA-protein/RPI13254_protein_seq.fa', RNA=True)
     positive_pairs = read_orf_interaction('data/ncRNA-protein/RPI13254_positive.txt')
@@ -265,7 +250,9 @@ def prepare_RPI13254_feature(seperate=False, extract_only_posi=False, indep_test
     group_dict = TransDict_from_list(groups)
     protein_tris = get_3_protein_trids()
     tris = get_4_trids()
-    train = []
+    train = {}
+    train[0] = []
+    train[1] = []
     label = []
     if not indep_test:
         random.shuffle(positive_pairs)
@@ -278,17 +265,22 @@ def prepare_RPI13254_feature(seperate=False, extract_only_posi=False, indep_test
             label.append(1)
             # RNA_fea = [RNA_fea_dict[RNA][ind] for ind in fea_imp]
             RNA_seq = RNA_seq_dict[RNA]
-            protein_seq = translate_sequence(protein_seq_dict[protein], group_dict)
+            protein_seq = protein_seq_dict[protein]
+            # seq2vec feature
+            RNA_seq2vec_fea = seq2vec_rna.transform([list(RNA_seq)]).reshape(-1) / len(RNA_seq)
+            pro_seq2vec_fea = seq2vec_pro.transform([list(protein_seq)]).reshape(-1) / len(protein_seq)
+            protein_seq = translate_sequence(protein_seq, group_dict)
             RNA_tri_fea = get_k_nucleotide_composition(tris, RNA_seq)
             protein_tri_fea = get_k_nucleotide_composition(protein_tris, protein_seq)
             if seperate:
                 tmp_fea = (protein_tri_fea, RNA_tri_fea)
-
+                tmp_fea2 = (pro_seq2vec_fea, RNA_seq2vec_fea)
             else:
                 tmp_fea = protein_tri_fea + RNA_tri_fea
+                tmp_fea2 = pro_seq2vec_fea + RNA_seq2vec_fea
 
-            train.append(tmp_fea)
-
+            train[0].append(tmp_fea)
+            train[1].append(tmp_fea2)
         else:
             print(RNA, protein)
     if not extract_only_posi:
@@ -298,21 +290,27 @@ def prepare_RPI13254_feature(seperate=False, extract_only_posi=False, indep_test
                 label.append(0)
                 # RNA_fea = [RNA_fea_dict[RNA][ind] for ind in fea_imp]
                 RNA_seq = RNA_seq_dict[RNA]
-                protein_seq = translate_sequence(protein_seq_dict[protein], group_dict)
+                protein_seq = protein_seq_dict[protein]
+                # seq2vec feature
+                RNA_seq2vec_fea = seq2vec_rna.transform([list(RNA_seq)]).reshape(-1) / len(RNA_seq)
+                pro_seq2vec_fea = seq2vec_pro.transform([list(protein_seq)]).reshape(-1) / len(protein_seq)
+                protein_seq = translate_sequence(protein_seq, group_dict)
                 RNA_tri_fea = get_k_nucleotide_composition(tris, RNA_seq)
                 protein_tri_fea = get_k_nucleotide_composition(protein_tris, protein_seq)
                 if seperate:
                     tmp_fea = (protein_tri_fea, RNA_tri_fea)
-
+                    tmp_fea2 = (pro_seq2vec_fea, RNA_seq2vec_fea)
                 else:
                     tmp_fea = protein_tri_fea + RNA_tri_fea
+                    tmp_fea2 = pro_seq2vec_fea + RNA_seq2vec_fea
 
-                train.append(tmp_fea)
+                train[0].append(tmp_fea)
+                train[1].append(tmp_fea2)
 
             else:
                 print(RNA, protein)
 
-    return np.array(train), label
+    return train, label
 
 
 def read_name_from_fasta(fasta_file):
@@ -328,6 +326,11 @@ def read_name_from_fasta(fasta_file):
 
 def prepare_NPinter_feature(extract_only_posi=False, graph=False, deepmind=False, seperate=False, chem_fea=True):
     print('NPinter data')
+    seq2vec_rna = Seq2VecR2RHash()
+    seq2vec_pro = Seq2VecR2RHash()
+    seq2vec_rna.load_customed_model("pretrained models/seq2vec_rna.model")
+    seq2vec_pro.load_customed_model("pretrained models/seq2vec_protein.model")
+
     name_list = read_name_from_fasta('data/ncRNA-protein/NPinter_RNA_seq.fa')
     seq_dict = read_fasta_file('data/ncRNA-protein/NPinter_RNA_seq.fa')
     protein_seq_dict = read_fasta_file('data/ncRNA-protein/NPinter_protein_seq.fa')
@@ -335,7 +338,9 @@ def prepare_NPinter_feature(extract_only_posi=False, graph=False, deepmind=False
     group_dict = TransDict_from_list(groups)
     protein_tris = get_3_protein_trids()
     # pdb.set_trace()
-    train = []
+    train = {}
+    train[0] = []
+    train[1] = []
     label = []
     chem_fea = []
     posi_set = set()
@@ -356,17 +361,21 @@ def prepare_NPinter_feature(extract_only_posi=False, graph=False, deepmind=False
                 label.append(1)
                 # RNA_fea = [RNA_fea_dict[RNA][ind] for ind in fea_imp]
                 RNA_seq = seq_dict[RNA]
-                protein_seq = translate_sequence(protein_seq_dict[protein], group_dict)
-
+                protein_seq = protein_seq_dict[protein]
+                # seq2vec feature
+                RNA_seq2vec_fea = seq2vec_rna.transform([list(RNA_seq)]).reshape(-1) / len(RNA_seq)
+                pro_seq2vec_fea = seq2vec_pro.transform([list(protein_seq)]).reshape(-1) / len(protein_seq)
+                protein_seq = translate_sequence(protein_seq, group_dict)
                 RNA_tri_fea = get_k_nucleotide_composition(tris, RNA_seq)
                 protein_tri_fea = get_k_nucleotide_composition(protein_tris, protein_seq)
                 if seperate:
                     tmp_fea = (protein_tri_fea, RNA_tri_fea)
-
+                    tmp_fea2 = (pro_seq2vec_fea, RNA_seq2vec_fea)
                 else:
                     tmp_fea = protein_tri_fea + RNA_tri_fea
-
-                train.append(tmp_fea)
+                    tmp_fea2 = pro_seq2vec_fea + RNA_seq2vec_fea
+                train[0].append(tmp_fea)
+                train[1].append(tmp_fea2)
 
             else:
                 print(RNA, protein)
@@ -397,24 +406,35 @@ def prepare_NPinter_feature(extract_only_posi=False, graph=False, deepmind=False
                     label.append(0)
                     # RNA_fea = [RNA_fea_dict[RNA][ind] for ind in fea_imp]
                     RNA_seq = seq_dict[RNA]
-                    protein_seq = translate_sequence(protein_seq_dict[select_pro], group_dict)
-
+                    protein_seq = protein_seq_dict[select_pro]
+                    # seq2vec feature
+                    RNA_seq2vec_fea = seq2vec_rna.transform([list(RNA_seq)]).reshape(-1) / len(RNA_seq)
+                    pro_seq2vec_fea = seq2vec_pro.transform([list(protein_seq)]).reshape(-1) / len(protein_seq)
+                    protein_seq = translate_sequence(protein_seq, group_dict)
                     RNA_tri_fea = get_k_nucleotide_composition(tris, RNA_seq)
                     protein_tri_fea = get_k_nucleotide_composition(protein_tris, protein_seq)
                     if seperate:
                         tmp_fea = (protein_tri_fea, RNA_tri_fea)
+                        tmp_fea2 = (pro_seq2vec_fea, RNA_seq2vec_fea)
                     else:
                         tmp_fea = protein_tri_fea + RNA_tri_fea
-                    train.append(tmp_fea)
+                        tmp_fea2 = pro_seq2vec_fea + RNA_seq2vec_fea
+                    train[0].append(tmp_fea)
+                    train[1].append(tmp_fea2)
                     # chem_fea.append(chem_tmp_fea)
                 else:
                     print(RNA, protein)  # for key, val in RNA_fea_dict.iteritems():
 
-    return np.array(train), label
+    return train, label
 
 
 def prepare_RPI1807_feature(graph=False, seperate=False, chem_fea=True):
     print('RPI1807 data')
+    seq2vec_rna = Seq2VecR2RHash()
+    seq2vec_pro = Seq2VecR2RHash()
+    seq2vec_rna.load_customed_model("pretrained models/seq2vec_rna.model")
+    seq2vec_pro.load_customed_model("pretrained models/seq2vec_protein.model")
+
     # name_list = read_name_from_fasta('ncRNA-protein/RNA_seq.fa')
     seq_dict = read_fasta_file('data/ncRNA-protein/RPI1807_RNA_seq.fa')
     protein_seq_dict = read_fasta_file('data/ncRNA-protein/RPI1807_protein_seq.fa')
@@ -423,9 +443,10 @@ def prepare_RPI1807_feature(graph=False, seperate=False, chem_fea=True):
     protein_tris = get_3_protein_trids()
     tris = get_4_trids()
     # pdb.set_trace()
-    train = []
+    train = {}
+    train[0] = []
+    train[1] = []
     label = []
-    chem_fea = []
     # pdb.set_trace()
     with open('data/ncRNA-protein/RPI1807_PositivePairs.csv', 'r') as fp:
         for line in fp:
@@ -437,19 +458,25 @@ def prepare_RPI1807_feature(graph=False, seperate=False, chem_fea=True):
             if pro2 in seq_dict and pro1 in protein_seq_dict:  # and protein_fea_dict.has_key(pro1) and RNA_fea_dict.has_key(pro2):
                 label.append(1)
                 RNA_seq = seq_dict[pro2]
-                protein_seq = translate_sequence(protein_seq_dict[pro1], group_dict)
-
+                protein_seq = protein_seq_dict[pro1]
+                # seq2vec feature
+                RNA_seq2vec_fea = seq2vec_rna.transform([list(RNA_seq)]).reshape(-1) / len(RNA_seq)
+                pro_seq2vec_fea = seq2vec_pro.transform([list(protein_seq)]).reshape(-1) / len(protein_seq)
+                protein_seq = translate_sequence(protein_seq, group_dict)
                 RNA_tri_fea = get_k_nucleotide_composition(tris, RNA_seq)
                 protein_tri_fea = get_k_nucleotide_composition(protein_tris, protein_seq)
                 # RNA_fea = [RNA_fea_dict[RNA][ind] for ind in fea_imp]
                 # tmp_fea = protein_fea_dict[protein] + tri_fea #+ RNA_fea_dict[RNA]
                 if seperate:
                     tmp_fea = (protein_tri_fea, RNA_tri_fea)
+                    tmp_fea2 = (pro_seq2vec_fea, RNA_seq2vec_fea)
                     # chem_tmp_fea = (protein_fea_dict[pro1], RNA_fea_dict[pro2])
                 else:
                     tmp_fea = protein_tri_fea + RNA_tri_fea
+                    tmp_fea2 = pro_seq2vec_fea + RNA_seq2vec_fea
                     # chem_tmp_fea = protein_fea_dict[pro1] + RNA_fea_dict[pro2]
-                train.append(tmp_fea)
+                train[0].append(tmp_fea)
+                train[1].append(tmp_fea2)
                 # chem_fea.append(chem_tmp_fea)
             else:
                 print(pro1, pro2)
@@ -463,33 +490,46 @@ def prepare_RPI1807_feature(graph=False, seperate=False, chem_fea=True):
             if pro2 in seq_dict and pro1 in protein_seq_dict:  # and protein_fea_dict.has_key(pro1) and RNA_fea_dict.has_key(pro2):
                 label.append(0)
                 RNA_seq = seq_dict[pro2]
-                protein_seq = translate_sequence(protein_seq_dict[pro1], group_dict)
-
+                protein_seq = protein_seq_dict[pro1]
+                # seq2vec feature
+                RNA_seq2vec_fea = seq2vec_rna.transform([list(RNA_seq)]).reshape(-1) / len(RNA_seq)
+                pro_seq2vec_fea = seq2vec_pro.transform([list(protein_seq)]).reshape(-1) / len(protein_seq)
+                protein_seq = translate_sequence(protein_seq, group_dict)
                 RNA_tri_fea = get_k_nucleotide_composition(tris, RNA_seq)
                 protein_tri_fea = get_k_nucleotide_composition(protein_tris, protein_seq)
                 # RNA_fea = [RNA_fea_dict[RNA][ind] for ind in fea_imp]
                 # tmp_fea = protein_fea_dict[protein] + tri_fea #+ RNA_fea_dict[RNA]
                 if seperate:
                     tmp_fea = (protein_tri_fea, RNA_tri_fea)
+                    tmp_fea2 = (pro_seq2vec_fea, RNA_seq2vec_fea)
                     # chem_tmp_fea = (protein_fea_dict[pro1], RNA_fea_dict[pro2])
                 else:
                     tmp_fea = protein_tri_fea + RNA_tri_fea
+                    tmp_fea2 = pro_seq2vec_fea + RNA_seq2vec_fea
                     # chem_tmp_fea = protein_fea_dict[pro1] + RNA_fea_dict[pro2]
-                train.append(tmp_fea)
+                train[0].append(tmp_fea)
+                train[1].append(tmp_fea2)
                 # chem_fea.append(chem_tmp_fea)
             else:
                 print(pro1, pro2)
-    return np.array(train), label
+    return train, label
 
 
 def prepare_RPI2241_369_feature(rna_fasta_file, data_file, protein_fasta_file, seperate=False):
+    seq2vec_rna = Seq2VecR2RHash()
+    seq2vec_pro = Seq2VecR2RHash()
+    seq2vec_rna.load_customed_model("pretrained models/seq2vec_rna.model")
+    seq2vec_pro.load_customed_model("pretrained models/seq2vec_protein.model")
+
     seq_dict = read_fasta_file(rna_fasta_file)
     protein_seq_dict = read_fasta_file(protein_fasta_file)
     groups = ['AGV', 'ILFP', 'YMTS', 'HNQW', 'RK', 'DE', 'C']
     group_dict = TransDict_from_list(groups)
     protein_tris = get_3_protein_trids()
     tris = get_4_trids()
-    train = []
+    train = {}
+    train[0] = []
+    train[1] = []
     label = []
     chem_fea = []
     # posi_set = set()
@@ -502,24 +542,29 @@ def prepare_RPI2241_369_feature(rna_fasta_file, data_file, protein_fasta_file, s
             if RNA in seq_dict and protein in protein_seq_dict:
                 label.append(int(tmplabel))
                 RNA_seq = seq_dict[RNA]
-                protein_seq = translate_sequence(protein_seq_dict[protein], group_dict)
-
+                protein_seq = protein_seq_dict[protein]
+                # seq2vec feature
+                RNA_seq2vec_fea = seq2vec_rna.transform([list(RNA_seq)]).reshape(-1) / len(RNA_seq)
+                pro_seq2vec_fea = seq2vec_pro.transform([list(protein_seq)]).reshape(-1) / len(protein_seq)
+                protein_seq = translate_sequence(protein_seq, group_dict)
                 RNA_tri_fea = get_k_nucleotide_composition(tris, RNA_seq)
                 protein_tri_fea = get_k_nucleotide_composition(protein_tris, protein_seq)
                 if seperate:
                     tmp_fea = (protein_tri_fea, RNA_tri_fea)
+                    tmp_fea2 = (pro_seq2vec_fea, RNA_seq2vec_fea)
                 else:
                     tmp_fea = protein_tri_fea + RNA_tri_fea
-                train.append(tmp_fea)
+                    tmp_fea2 = pro_seq2vec_fea + RNA_seq2vec_fea
+                train[0].append(tmp_fea)
+                train[1].append(tmp_fea2)
             else:
                 print(RNA, protein)
 
-    return np.array(train), label
+    return train, label
 
 
 def prepare_RPI488_feature(seperate=False, chem_fea=True):
     print('RPI488 dataset')
-
     seq2vec_rna = Seq2VecR2RHash()
     seq2vec_pro = Seq2VecR2RHash()
     seq2vec_rna.load_customed_model("pretrained models/seq2vec_rna.model")  # maybe this way is wrong
@@ -553,10 +598,9 @@ def prepare_RPI488_feature(seperate=False, chem_fea=True):
     protein_tris = get_3_protein_trids()
     tris = get_4_trids()
 
-    train = {}  # Changed
+    train = {}
     train[0] = []  # for kmer feature
     train[1] = []  # for seq2vec feature
-
     label = []
     for key, val in interaction_pair.items():  # iteritems() removed in python 3
         protein, RNA = key[0], key[1]
@@ -565,37 +609,43 @@ def prepare_RPI488_feature(seperate=False, chem_fea=True):
             label.append(val)
             RNA_seq = RNA_seq_dict[RNA]
             protein_seq = protein_seq_dict[protein]
-
             # seq2vec feature
-            RNA_seq2vec_fea = seq2vec_rna.transform([list(RNA_seq)])  # list(RNA_seq)
-            RNA_seq2vec_fea = RNA_seq2vec_fea.reshape(-1)  # [[]] -> []  2D array to 1D array
-            protein_seq2vec_fea = seq2vec_pro.transform([list(protein_seq)])  # list(protein_seq)
-            protein_seq2vec_fea = protein_seq2vec_fea.reshape(-1)  # [[]] -> []
+            RNA_seq2vec_fea = seq2vec_rna.transform([list(RNA_seq)]).reshape(-1) / len(RNA_seq)  # list(RNA_seq)
+            # # RNA_seq2vec_fea = RNA_seq2vec_fea  # [[]] -> []  2D array to 1D array
+            pro_seq2vec_fea = seq2vec_pro.transform([list(protein_seq)]).reshape(-1) / len(protein_seq)  # list(protein_seq)
+            # # protein_seq2vec_fea = protein_seq2vec_fea  # [[]] -> []
 
             protein_seq = translate_sequence(protein_seq_dict[protein], group_dict)  # reduced Alphabet
             RNA_tri_fea = get_k_nucleotide_composition(tris, RNA_seq)
             protein_tri_fea = get_k_nucleotide_composition(protein_tris, protein_seq)
             if seperate:
                 tmp_fea = (protein_tri_fea, RNA_tri_fea)
-                tmp_2vec = (protein_seq2vec_fea, RNA_seq2vec_fea)
+                tmp_2vec = (pro_seq2vec_fea, RNA_seq2vec_fea)
             else:
                 tmp_fea = protein_tri_fea + RNA_tri_fea
-                tmp_2vec = protein_seq2vec_fea + RNA_seq2vec_fea
+                tmp_2vec = pro_seq2vec_fea + RNA_seq2vec_fea
             train[0].append(tmp_fea)
             train[1].append(tmp_2vec)
         else:
             print(RNA, protein)
-
     return train, label
 
 
 def prepare_RPIntDB_feature(seperate=False, chem_fea=True):
+    print("RPIntDB")
+    seq2vec_rna = Seq2VecR2RHash()
+    seq2vec_pro = Seq2VecR2RHash()
+    seq2vec_rna.load_customed_model("pretrained models/seq2vec_rna.model")  # maybe this way is wrong
+    seq2vec_pro.load_customed_model("pretrained models/seq2vec_protein.model")
+
     groups = ['AGV', 'ILFP', 'YMTS', 'HNQW', 'RK', 'DE', 'C']
     group_dict = TransDict_from_list(groups)
     protein_tris = get_3_protein_trids()
     tris = get_4_trids()
     # tris3 = get_3_trids()
-    train = []
+    train = {}
+    train[0] = []  # for kmer feature
+    train[1] = []  # for seq2vec feature
     label = []
     chem_fea = []
     head = True
@@ -610,18 +660,22 @@ def prepare_RPIntDB_feature(seperate=False, chem_fea=True):
             RNA = values[2]
             RNA_seq = values[3]
             label.append(1)
+            RNA_seq2vec_fea = seq2vec_rna.transform([list(RNA_seq)]).reshape(-1) / len(RNA_seq)
+            pro_seq2vec_fea = seq2vec_pro.transform([list(protein_seq)]).reshape(-1) / len(protein_seq)
+            protein_seq = translate_sequence(protein_seq, group_dict)
             RNA_tri_fea = get_k_nucleotide_composition(tris, RNA_seq)
             protein_tri_fea = get_k_nucleotide_composition(protein_tris, protein_seq)
 
             if seperate:
                 tmp_fea = (protein_tri_fea, RNA_tri_fea)
-                # chem_tmp_fea = (protein_fea_dict[protein], RNA_fea_dict[RNA])
+                tmp_2vec = (pro_seq2vec_fea, RNA_seq2vec_fea)
             else:
                 tmp_fea = protein_tri_fea + RNA_tri_fea
-                # chem_tmp_fea = protein_fea_dict[protein] + RNA_fea_dict[RNA]
-            train.append(tmp_fea)
+                tmp_2vec = pro_seq2vec_fea + RNA_seq2vec_fea
+            train[0].append(tmp_fea)
+            train[1].append(tmp_2vec)
 
-    return np.array(train), label
+    return train, label
 
 
 def get_data(dataset, seperate=False):
@@ -646,63 +700,6 @@ def get_data(dataset, seperate=False):
         X, labels = prepare_RPI13254_feature(seperate=seperate)
 
     return X, labels
-
-
-# def preprocess(dataset):
-#     rna_test = []
-#     pc_test = []
-#     label = []
-#
-#     if dataset == "RPI2241":
-#         path_pc = "data/ncRNA-protein/" + dataset + "_protein.fa"
-#         path_rna = "data/ncRNA-protein/" + dataset + "_rna.fa"
-#         path = "data/ncRNA-protein/" + dataset + "_all.txt"
-#
-#         # generate dictionary of rna and protein
-#         dic_pc = generate_dic(path_pc)
-#         dic_rna = generate_dic(path_rna)
-#         data = np.array(pd.read_csv(path, sep="\t")).tolist()
-#
-#         for i in data:
-#
-#             if i[0] in dic_pc.keys() and i[1] in dic_rna.keys():
-#                 pc_test.append([dic_pc[i[0]]])
-#                 rna_test.append([dic_rna[i[1]]])
-#                 label.append(i[2])
-#             elif i[1] in dic_pc.keys() and i[0] in dic_rna.keys():
-#                 pc_test.append([dic_pc[i[1]]])
-#                 rna_test.append([dic_rna[i[0]]])
-#                 label.append(i[2])
-#             else:
-#                 print(i)
-#                 continue
-#     elif dataset == "RPI488":
-#         path = "data/ncRNA-protein/lncRNA-protein-488.txt"
-#         fr = open(path, "r")
-#         count = 0
-#         for line in fr:
-#             count += 1
-#             if line[0] == '>':
-#                 s = str(line).strip('\n').split('|', 2)
-#                 # print(s)
-#                 if s[1] == "non":
-#                     label.append(int(0))
-#                 else:
-#                     label.append(int(1))
-#             elif count == 3:
-#                 rna_test.append(list(line.strip('\n')))
-#                 count = 0
-#             else:
-#                 pc_test.append(list(line.strip('\n')))
-#     # print(len(pc_test))
-#     # print(len(rna_test))
-#     result_pc = transformer_protein.transform(pc_test)
-#     result_rna = transformer_rna.transform(rna_test)
-#
-#     pd.DataFrame(result_pc).to_csv("transformedPC.csv")
-#     pd.DataFrame(result_rna).to_csv("transformedRNA.csv")
-#
-#     return np.array(result_rna), np.array(result_pc), label
 
 
 def plot_roc_curve(labels, probality, legend_text, auc_tag=True):
@@ -766,7 +763,7 @@ def transfer_label_from_prob(proba):
 
 
 def main(X_data, y):
-    print(shape(X_data))
+    print(np.shape(X_data))
     num_cross_val = 5  # 5-fold
     all_performance_svm = []
     all_performance_rf = []
@@ -827,7 +824,7 @@ def main(X_data, y):
         print('---' * 50)
 
         print('Random forest')
-        rd = RandomForestClassifier(n_estimators=51)
+        rd = RandomForestClassifier(n_estimators=100)
         rd.fit(train, train_label)
         rd_proba = rd.predict_proba(test)[:, 1]
         all_prob[2] = all_prob[2] + [val for val in rd_proba]
@@ -837,23 +834,12 @@ def main(X_data, y):
         all_performance_rf.append([acc, precision, sensitivity, specificity, MCC])
         print('---' * 50)
 
-        # print('XGB')
-        # xgb1 = XGBClassifier(max_depth=6, booster='gbtree')  # learning_rate=0.1,max_depth=6, booster='gbtree'
-        # xgb1.fit(train_kmer, train_label)
-        # xgb_proba = xgb1.predict_proba(test_kmer)[:, 1]
-        # all_prob[2] = all_prob[2] + [val for val in xgb_proba]
-        # y_pred_xgb = transfer_label_from_prob(xgb_proba)
-        # acc, precision, sensitivity, specificity, MCC = calculate_performance(len(real_labels), y_pred_xgb, real_labels)
-        # print(acc, precision, sensitivity, specificity, MCC)
-        # all_performance_xgb.append([acc, precision, sensitivity, specificity, MCC])
-        # print('---' * 50)
-
     return all_performance_svm, all_performance_ada, all_performance_rf, all_labels, all_prob
 
 
 if __name__ == "__main__":
     # prepare data
-    dataset = "RPI488"
+    dataset = "NPInter"
     # get_data()方法同时回传kmer, seq2vec特征
     X, labels = get_data(dataset)
     X1, X2 = X[0], X[1]
