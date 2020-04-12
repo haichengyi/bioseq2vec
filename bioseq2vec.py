@@ -1,6 +1,7 @@
 from numpy import shape
 import numpy as np
-from seq2vec import Seq2VecR2RHash
+from seq2vec import Seq2VecR2RHash, Seq2VecR2RWord
+from seq2vec.util import DataGenterator
 import argparse
 
 
@@ -31,7 +32,7 @@ def get_words(k, seq):
     # tmp_fea = [0] * len(tris)
     for x in range(len(seq) + 1 - k):
         kmer = seq[x:x + k]
-        words.append(kmer)
+        words.append(str(kmer))
     # tri_feature = [float(val)/seq_len for val in tmp_fea]
     # pdb.set_trace()
     return words
@@ -84,20 +85,23 @@ def pretrain(data, transformer, type):
 if __name__ == "__main__":
     # input_file = sys.argv[1]
     transformer = Seq2VecR2RHash(
-        max_index=4,
-        max_length=1000,
+        max_index=10,
+        max_length=300,
         latent_size=20,
-        embedding_size=100,
-        encoding_size=200,
-        learning_rate=0.05
+        embedding_size=200,
+        encoding_size=100,
+        learning_rate=0.1
     )
 
-    file_path = "data/corpus/gencode.v33.lncRNA_transcripts.fa"
+    # transformer_wv = Seq2VecR2RWord()
+
+    file_path = "data/corpus/gencode.v33.pc_translations.fa"
     seq_dict = read_fasta_file(file_path)
     sequences = []
     for seq in seq_dict.values():
-        sequences.append(list(seq))  # list('AAAU') -> 'A','A','A','U'
-    pretrain(sequences, transformer, "rna")
+        words = get_words(3, seq)
+        sequences.append(words)  # list('AAAU') -> 'A','A','A','U'
+    pretrain(sequences, transformer, "protein_word")
 
     ###################   test code ###################
     # transformer.load_customed_model(file_path='pretrained models/seq2vec_rna_word.model')

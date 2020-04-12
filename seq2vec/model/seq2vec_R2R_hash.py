@@ -87,6 +87,9 @@ class Seq2VecR2RHash(TrainableSeq2VecBase):
                     dropout=0.,
                     recurrent_dropout=0.
                 ),
+                # LSTM(
+                #     units=self.latent_size,
+                # ),
                 Dense(
                     units=self.encoding_size // 2,
                     activation='tanh'

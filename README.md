@@ -186,7 +186,8 @@ train_data = DataGenterator(
 test_data = DataGenterator(
     corpus_for_validation_path, 
     transformer.input_transformer,
-    transformer.output_transformer, 
+    transformer.output_transformer,
+     
     batch_size=128
 )
 
