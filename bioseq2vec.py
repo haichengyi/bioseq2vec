@@ -1,7 +1,7 @@
 from numpy import shape
 import numpy as np
-from seq2vec import Seq2VecR2RHash, Seq2VecR2RWord
-from seq2vec.util import DataGenterator
+from bioseq2vec import Seq2VecR2R
+from bioseq2vec.util import DataGenterator
 import argparse
 
 
@@ -77,14 +77,14 @@ def pretrain(data, transformer, type):
     # data = np.array(data).tolist()
     transformer.fit(data)
     print("pretrain ends!")
-    transformer.save_model("pretrained models/seq2vec_" + str(type) + ".model")  # save pretrained model
+    transformer.save_model("pretrained models/seq2vec_" + str(type) + ".model")  # save model
 
     return
 
 
 if __name__ == "__main__":
     # input_file = sys.argv[1]
-    transformer = Seq2VecR2RHash(
+    transformer = Seq2VecR2R(
         max_index=10,
         max_length=300,
         latent_size=20,
@@ -93,18 +93,10 @@ if __name__ == "__main__":
         learning_rate=0.1
     )
 
-    # transformer_wv = Seq2VecR2RWord()
-
     file_path = "data/corpus/gencode.v33.pc_translations.fa"
     seq_dict = read_fasta_file(file_path)
     sequences = []
     for seq in seq_dict.values():
-        words = get_words(3, seq)
+        words = get_words(3, seq)  # 3 for protein, 4 for RNA/DNA
         sequences.append(words)  # list('AAAU') -> 'A','A','A','U'
     pretrain(sequences, transformer, "protein_word")
-
-    ###################   test code ###################
-    # transformer.load_customed_model(file_path='pretrained models/seq2vec_rna_word.model')
-    # fea = transformer.transform(['AUC'])
-    # print(fea)
-    # # print(fea.reshape(-1))

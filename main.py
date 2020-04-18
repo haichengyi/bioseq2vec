@@ -1,21 +1,19 @@
 from random import randint
-
-from sklearn.preprocessing import StandardScaler, MinMaxScaler
-
-from seq2vec import Seq2VecR2RHash
-import numpy as np
-import pandas as pd
-from numpy import *
 import matplotlib
+from keras.utils import np_utils
 
 matplotlib.rcParams['backend'] = 'TkAgg'
+from numpy import *
+import numpy as np
+from sklearn.preprocessing import StandardScaler, MinMaxScaler, LabelEncoder
+from bioseq2vec import Seq2VecR2R
 import matplotlib.pyplot as plt
 from sklearn.metrics import roc_curve, auc
-from sklearn.linear_model import LogisticRegression
 from sklearn.ensemble import AdaBoostClassifier, RandomForestClassifier
-from xgboost import XGBClassifier
-from catboost import CatBoostClassifier
 from sklearn.svm import SVC
+import time
+
+date_time = time.strftime("%Y-%m-%d-%H-%M-%S", time.localtime())
 
 
 def get_4_trids():
@@ -237,8 +235,8 @@ def get_words(k, seq):
 
 
 def prepare_RPI13254_feature(seperate=False, extract_only_posi=False, indep_test=False):
-    seq2vec_rna = Seq2VecR2RHash()
-    seq2vec_pro = Seq2VecR2RHash()
+    seq2vec_rna = Seq2VecR2R()
+    seq2vec_pro = Seq2VecR2R()
     seq2vec_rna.load_customed_model("pretrained models/seq2vec_rna.model")
     seq2vec_pro.load_customed_model("pretrained models/seq2vec_protein.model")
 
@@ -330,8 +328,8 @@ def read_name_from_fasta(fasta_file):
 
 def prepare_NPinter_feature(extract_only_posi=False, graph=False, deepmind=False, seperate=False, chem_fea=True):
     print('NPinter data')
-    seq2vec_rna = Seq2VecR2RHash()
-    seq2vec_pro = Seq2VecR2RHash()
+    seq2vec_rna = Seq2VecR2R()
+    seq2vec_pro = Seq2VecR2R()
     seq2vec_rna.load_customed_model("pretrained models/seq2vec_rna.model")
     seq2vec_pro.load_customed_model("pretrained models/seq2vec_protein.model")
 
@@ -438,8 +436,8 @@ def prepare_NPinter_feature(extract_only_posi=False, graph=False, deepmind=False
 
 def prepare_RPI1807_feature(graph=False, seperate=False, chem_fea=True):
     print('RPI1807 data')
-    seq2vec_rna = Seq2VecR2RHash()
-    seq2vec_pro = Seq2VecR2RHash()
+    seq2vec_rna = Seq2VecR2R()
+    seq2vec_pro = Seq2VecR2R()
     seq2vec_rna.load_customed_model("pretrained models/seq2vec_rna.model")
     seq2vec_pro.load_customed_model("pretrained models/seq2vec_protein.model")
 
@@ -528,8 +526,8 @@ def prepare_RPI1807_feature(graph=False, seperate=False, chem_fea=True):
 
 
 def prepare_RPI2241_369_feature(rna_fasta_file, data_file, protein_fasta_file, seperate=False):
-    seq2vec_rna = Seq2VecR2RHash()
-    seq2vec_pro = Seq2VecR2RHash()
+    seq2vec_rna = Seq2VecR2R()
+    seq2vec_pro = Seq2VecR2R()
     seq2vec_rna.load_customed_model("pretrained models/seq2vec_rna.model")
     seq2vec_pro.load_customed_model("pretrained models/seq2vec_protein.model")
 
@@ -558,7 +556,8 @@ def prepare_RPI2241_369_feature(rna_fasta_file, data_file, protein_fasta_file, s
                 # seq2vec feature
                 RNA_seq2vec_fea = seq2vec_rna.transform([list(RNA_seq)]).reshape(-1) / len(RNA_seq)  # list(RNA_seq)
                 RNA_seq2vec_fea = np.array(RNA_seq2vec_fea).tolist()  # [[]] -> []  2D array to 1D array
-                pro_seq2vec_fea = seq2vec_pro.transform([list(protein_seq)]).reshape(-1) / len(protein_seq)  # list(protein_seq)
+                pro_seq2vec_fea = seq2vec_pro.transform([list(protein_seq)]).reshape(-1) / len(
+                    protein_seq)  # list(protein_seq)
                 pro_seq2vec_fea = np.array(pro_seq2vec_fea).tolist()  # [[]] -> []
                 protein_seq = translate_sequence(protein_seq, group_dict)
                 RNA_tri_fea = get_k_nucleotide_composition(tris, RNA_seq)
@@ -579,8 +578,8 @@ def prepare_RPI2241_369_feature(rna_fasta_file, data_file, protein_fasta_file, s
 
 def prepare_RPI488_feature(seperate=False, chem_fea=True):
     print('RPI488 dataset')
-    seq2vec_rna = Seq2VecR2RHash()
-    seq2vec_pro = Seq2VecR2RHash()
+    seq2vec_rna = Seq2VecR2R()
+    seq2vec_pro = Seq2VecR2R()
     seq2vec_rna.load_customed_model("pretrained models/seq2vec_rna_word.model")
     seq2vec_pro.load_customed_model("pretrained models/seq2vec_protein_word.model")
 
@@ -619,14 +618,13 @@ def prepare_RPI488_feature(seperate=False, chem_fea=True):
     for key, val in interaction_pair.items():  # iteritems() removed in python 3
         protein, RNA = key[0], key[1]
         if RNA in RNA_seq_dict and protein in protein_seq_dict:
-            # python2: protein_fea_dict.has_key(protein) and RNA_fea_dict.has_key(RNA):
             label.append(val)
             RNA_seq = RNA_seq_dict[RNA]
             protein_seq = protein_seq_dict[protein]
             # seq2vec feature
-            RNA_seq2vec_fea = seq2vec_rna.transform([get_words(4, RNA_seq)]).reshape(-1)
+            RNA_seq2vec_fea = seq2vec_rna.transform([get_words(8, RNA_seq)]).reshape(-1)
             RNA_seq2vec_fea = np.array(RNA_seq2vec_fea).tolist()
-            pro_seq2vec_fea = seq2vec_pro.transform([get_words(3,protein_seq)]).reshape(-1) # / len(protein_seq)
+            pro_seq2vec_fea = seq2vec_pro.transform([get_words(6, protein_seq)]).reshape(-1)
             pro_seq2vec_fea = np.array(pro_seq2vec_fea).tolist()
 
             # print(shape(RNA_seq2vec_fea), type(RNA_seq2vec_fea))
@@ -650,9 +648,9 @@ def prepare_RPI488_feature(seperate=False, chem_fea=True):
 
 def prepare_RPIntDB_feature(seperate=False, chem_fea=True):
     print("RPIntDB")
-    seq2vec_rna = Seq2VecR2RHash()
-    seq2vec_pro = Seq2VecR2RHash()
-    seq2vec_rna.load_customed_model("pretrained models/seq2vec_rna.model")  # maybe this way is wrong
+    seq2vec_rna = Seq2VecR2R()
+    seq2vec_pro = Seq2VecR2R()
+    seq2vec_rna.load_customed_model("pretrained models/seq2vec_rna.model")
     seq2vec_pro.load_customed_model("pretrained models/seq2vec_protein.model")
 
     groups = ['AGV', 'ILFP', 'YMTS', 'HNQW', 'RK', 'DE', 'C']
@@ -721,7 +719,7 @@ def get_data(dataset, seperate=False):
     return X, labels
 
 
-def plot_roc_curve(labels, probality, legend_text, auc_tag=True):
+def plot_roc_curve(labels, probality, legend_text, linestyle, auc_tag=True):
     # fpr2, tpr2, thresholds = roc_curve(labels, pred_y)
     fpr, tpr, thresholds = roc_curve(labels, probality)  # probas_[:, 1])
     roc_auc = auc(fpr, tpr)
@@ -774,6 +772,16 @@ def preprocess_data(X, scaler=None, stand=True):
         scaler.fit(X)
     X = scaler.transform(X)
     return X
+
+
+def preprocess_labels(labels, encoder=None, categorical=True):
+    if not encoder:
+        encoder = LabelEncoder()
+        encoder.fit(labels)
+    y = encoder.transform(labels).astype(np.int32)
+    if categorical:
+        y = np_utils.to_categorical(y)
+    return y, encoder
 
 
 def transfer_label_from_prob(proba):
@@ -861,10 +869,10 @@ if __name__ == "__main__":
     dataset = "RPI488"
     # get_data()方法同时回传kmer, seq2vec特征
     X, labels = get_data(dataset)
-    X1, X2= X[0], X[1]
+    X1, X2 = X[0], X[1]
     X1 = preprocess_data(X1)  # 特征StandardScaler()归一化
     X2 = preprocess_data(X2)
-    y = np.array(labels, dtype=int)
+    y = np.array(labels, dtype=int32)
 
     # 以 kmer特征的 ‘X1’ 调用main()方法
     all_performance_svm1, all_performance_ada1, all_performance_rf1, all_labels, all_prob = main(X1, y)
@@ -892,12 +900,13 @@ if __name__ == "__main__":
     print('---' * 50)
 
     Figure = plt.figure()
-    plot_roc_curve(all_labels, all_prob[0], 'kmer_SVM')
+
     plot_roc_curve(all_labels, all_prob[1], 'kmer_AdaBoost')
     plot_roc_curve(all_labels, all_prob[2], 'kmer_Random Forest')
-    plot_roc_curve(all_labels2, all_prob2[0], 'bioseq2vec_SVM')
-    plot_roc_curve(all_labels2, all_prob2[1], 'bioseq2vec_AdaBoost')
-    plot_roc_curve(all_labels2, all_prob2[2], 'bioseq2vec_Random Forest')
+    plot_roc_curve(all_labels, all_prob[0], 'kmer_SVM')
+    plot_roc_curve(all_labels2, all_prob2[1], 'BioSeq2vec_AdaBoost')
+    plot_roc_curve(all_labels2, all_prob2[2], 'BioSeq2vec_Random Forest')
+    plot_roc_curve(all_labels2, all_prob2[0], 'BioSeq2vec_SVM')
     plt.plot([0, 1], [0, 1], 'k--')
     plt.xlim([-0.05, 1])
     plt.ylim([0, 1.05])
@@ -905,5 +914,5 @@ if __name__ == "__main__":
     plt.ylabel('True Positive Rate')
     plt.title('ROC')
     plt.legend(loc="lower right")
-    plt.savefig('result/' + dataset + '_s.tif', dpi=300)  # .svg
+    plt.savefig('result/' + dataset + '_' + date_time + '.tif', dpi=300)  # .svg
     plt.show()
