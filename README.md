@@ -1,5 +1,5 @@
 # BioSeq2vec
-Learning distributed representation of biological sequences using LSTM Encoder-Decoder
+Learning representation of biological sequences using LSTM Encoder-Decoder
 
 ### Usage:
 

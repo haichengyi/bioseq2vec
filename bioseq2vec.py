@@ -90,13 +90,13 @@ if __name__ == "__main__":
         latent_size=20,
         embedding_size=200,
         encoding_size=100,
-        learning_rate=0.1
+        learning_rate=0.05
     )
 
-    file_path = "data/corpus/gencode.v33.pc_translations.fa"
+    file_path = "data\corpus\gencode.v33.pc_translations.fa"
     seq_dict = read_fasta_file(file_path)
     sequences = []
     for seq in seq_dict.values():
-        words = get_words(3, seq)  # 3 for protein, 4 for RNA/DNA
-        sequences.append(words)  # list('AAAU') -> 'A','A','A','U'
-    pretrain(sequences, transformer, "protein_word")
+        words = get_words(6, seq)  # 3 for protein, 4 for RNA/DNA
+        sequences.append(words)
+    pretrain(sequences, transformer, "protein_word6")

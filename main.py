@@ -11,6 +11,7 @@ import matplotlib.pyplot as plt
 from sklearn.metrics import roc_curve, auc
 from sklearn.ensemble import AdaBoostClassifier, RandomForestClassifier
 from sklearn.svm import SVC
+from lightgbm.sklearn import LGBMClassifier
 import time
 
 date_time = time.strftime("%Y-%m-%d-%H-%M-%S", time.localtime())
@@ -233,12 +234,41 @@ def get_words(k, seq):
     # pdb.set_trace()
     return words
 
+bioseq2vec_rna = Seq2VecR2R()
+bioseq2vec_pro = Seq2VecR2R()
+bioseq2vec_rna.load_customed_model("pretrained models/seq2vec_rna_word.model")
+bioseq2vec_pro.load_customed_model("pretrained models/seq2vec_protein_word.model")
+def get_bioseq2vec(seq, type=str):
+    if type == "rna":
+        seq2vec_fea = bioseq2vec_rna.transform([get_words(4, seq)]).reshape(-1)
+        seq2vec_fea = np.array(seq2vec_fea).tolist()
+    else:
+        seq2vec_fea = bioseq2vec_pro.transform([get_words(3, seq)]).reshape(-1)
+        seq2vec_fea = np.array(seq2vec_fea).tolist()
+
+    return seq2vec_fea
+
+
+bioseq2vec_rna_char = Seq2VecR2R()
+bioseq2vec_pro_char = Seq2VecR2R()
+bioseq2vec_rna_char.load_customed_model("pretrained models/seq2vec_rna.model")
+bioseq2vec_pro_char.load_customed_model("pretrained models/seq2vec_protein.model")
+def get_bioseq2vec_char(seq, type=str):
+    if type == "rna":
+        seq2vec_fea = bioseq2vec_rna_char.transform([get_words(4, seq)]).reshape(-1)
+        seq2vec_fea = np.array(seq2vec_fea).tolist()
+    else:
+        seq2vec_fea = bioseq2vec_pro_char.transform([get_words(3, seq)]).reshape(-1)
+        seq2vec_fea = np.array(seq2vec_fea).tolist()
+
+    return seq2vec_fea
+
 
 def prepare_RPI13254_feature(seperate=False, extract_only_posi=False, indep_test=False):
     seq2vec_rna = Seq2VecR2R()
     seq2vec_pro = Seq2VecR2R()
-    seq2vec_rna.load_customed_model("pretrained models/seq2vec_rna.model")
-    seq2vec_pro.load_customed_model("pretrained models/seq2vec_protein.model")
+    seq2vec_rna.load_customed_model("pretrained models/seq2vec_rna_word.model")
+    seq2vec_pro.load_customed_model("pretrained models/seq2vec_protein_word.model")
 
     protein_seq_dict = read_orf_seq('data/ncRNA-protein/RPI13254_RNA_seq.fa')
     RNA_seq_dict = read_orf_seq('data/ncRNA-protein/RPI13254_protein_seq.fa', RNA=True)
@@ -264,11 +294,18 @@ def prepare_RPI13254_feature(seperate=False, extract_only_posi=False, indep_test
             # RNA_fea = [RNA_fea_dict[RNA][ind] for ind in fea_imp]
             RNA_seq = RNA_seq_dict[RNA]
             protein_seq = protein_seq_dict[protein]
-            # seq2vec feature
-            RNA_seq2vec_fea = seq2vec_rna.transform([list(RNA_seq)]).reshape(-1) / len(RNA_seq)
+            # seq2vec feature char
+            # RNA_seq2vec_fea = seq2vec_rna.transform([list(RNA_seq)]).reshape(-1) / len(RNA_seq)
+            # RNA_seq2vec_fea = np.array(RNA_seq2vec_fea).tolist()
+            # pro_seq2vec_fea = seq2vec_pro.transform([list(protein_seq)]).reshape(-1) / len(protein_seq)
+            # pro_seq2vec_fea = np.array(pro_seq2vec_fea).tolist()
+
+            # word level
+            RNA_seq2vec_fea = seq2vec_rna.transform([get_words(4, RNA_seq)]).reshape(-1)
             RNA_seq2vec_fea = np.array(RNA_seq2vec_fea).tolist()
-            pro_seq2vec_fea = seq2vec_pro.transform([list(protein_seq)]).reshape(-1) / len(protein_seq)
+            pro_seq2vec_fea = seq2vec_pro.transform([get_words(3, protein_seq)]).reshape(-1)
             pro_seq2vec_fea = np.array(pro_seq2vec_fea).tolist()
+
             protein_seq = translate_sequence(protein_seq, group_dict)
             RNA_tri_fea = get_k_nucleotide_composition(tris, RNA_seq)
             protein_tri_fea = get_k_nucleotide_composition(protein_tris, protein_seq)
@@ -291,11 +328,18 @@ def prepare_RPI13254_feature(seperate=False, extract_only_posi=False, indep_test
                 # RNA_fea = [RNA_fea_dict[RNA][ind] for ind in fea_imp]
                 RNA_seq = RNA_seq_dict[RNA]
                 protein_seq = protein_seq_dict[protein]
-                # seq2vec feature
-                RNA_seq2vec_fea = seq2vec_rna.transform([list(RNA_seq)]).reshape(-1) / len(RNA_seq)
+                # seq2vec feature char
+                # RNA_seq2vec_fea = seq2vec_rna.transform([list(RNA_seq)]).reshape(-1) / len(RNA_seq)
+                # RNA_seq2vec_fea = np.array(RNA_seq2vec_fea).tolist()
+                # pro_seq2vec_fea = seq2vec_pro.transform([list(protein_seq)]).reshape(-1) / len(protein_seq)
+                # pro_seq2vec_fea = np.array(pro_seq2vec_fea).tolist()
+
+                # word level
+                RNA_seq2vec_fea = seq2vec_rna.transform([get_words(4, RNA_seq)]).reshape(-1)
                 RNA_seq2vec_fea = np.array(RNA_seq2vec_fea).tolist()
-                pro_seq2vec_fea = seq2vec_pro.transform([list(protein_seq)]).reshape(-1) / len(protein_seq)
+                pro_seq2vec_fea = seq2vec_pro.transform([get_words(3, protein_seq)]).reshape(-1)
                 pro_seq2vec_fea = np.array(pro_seq2vec_fea).tolist()
+
                 protein_seq = translate_sequence(protein_seq, group_dict)
                 RNA_tri_fea = get_k_nucleotide_composition(tris, RNA_seq)
                 protein_tri_fea = get_k_nucleotide_composition(protein_tris, protein_seq)
@@ -330,8 +374,8 @@ def prepare_NPinter_feature(extract_only_posi=False, graph=False, deepmind=False
     print('NPinter data')
     seq2vec_rna = Seq2VecR2R()
     seq2vec_pro = Seq2VecR2R()
-    seq2vec_rna.load_customed_model("pretrained models/seq2vec_rna.model")
-    seq2vec_pro.load_customed_model("pretrained models/seq2vec_protein.model")
+    seq2vec_rna.load_customed_model("pretrained models/seq2vec_rna_word.model")
+    seq2vec_pro.load_customed_model("pretrained models/seq2vec_protein_word.model")
 
     name_list = read_name_from_fasta('data/ncRNA-protein/NPinter_RNA_seq.fa')
     seq_dict = read_fasta_file('data/ncRNA-protein/NPinter_RNA_seq.fa')
@@ -364,11 +408,18 @@ def prepare_NPinter_feature(extract_only_posi=False, graph=False, deepmind=False
                 # RNA_fea = [RNA_fea_dict[RNA][ind] for ind in fea_imp]
                 RNA_seq = seq_dict[RNA]
                 protein_seq = protein_seq_dict[protein]
-                # seq2vec feature
+                # # seq2vec feature char
                 RNA_seq2vec_fea = seq2vec_rna.transform([list(RNA_seq)]).reshape(-1) / len(RNA_seq)
                 RNA_seq2vec_fea = np.array(RNA_seq2vec_fea).tolist()
                 pro_seq2vec_fea = seq2vec_pro.transform([list(protein_seq)]).reshape(-1) / len(protein_seq)
                 pro_seq2vec_fea = np.array(pro_seq2vec_fea).tolist()
+
+                # word-level
+                # RNA_seq2vec_fea = seq2vec_rna.transform([get_words(4, RNA_seq)]).reshape(-1)
+                # RNA_seq2vec_fea = np.array(RNA_seq2vec_fea).tolist()
+                # pro_seq2vec_fea = seq2vec_pro.transform([get_words(3, protein_seq)]).reshape(-1)
+                # pro_seq2vec_fea = np.array(pro_seq2vec_fea).tolist()
+
                 protein_seq = translate_sequence(protein_seq, group_dict)
                 RNA_tri_fea = get_k_nucleotide_composition(tris, RNA_seq)
                 protein_tri_fea = get_k_nucleotide_composition(protein_tris, protein_seq)
@@ -411,11 +462,18 @@ def prepare_NPinter_feature(extract_only_posi=False, graph=False, deepmind=False
                     # RNA_fea = [RNA_fea_dict[RNA][ind] for ind in fea_imp]
                     RNA_seq = seq_dict[RNA]
                     protein_seq = protein_seq_dict[select_pro]
-                    # seq2vec feature
+                    # seq2vec feature char
                     RNA_seq2vec_fea = seq2vec_rna.transform([list(RNA_seq)]).reshape(-1) / len(RNA_seq)
                     RNA_seq2vec_fea = np.array(RNA_seq2vec_fea).tolist()
                     pro_seq2vec_fea = seq2vec_pro.transform([list(protein_seq)]).reshape(-1) / len(protein_seq)
                     pro_seq2vec_fea = np.array(pro_seq2vec_fea).tolist()
+
+                    # word level
+                    # RNA_seq2vec_fea = seq2vec_rna.transform([get_words(4, RNA_seq)]).reshape(-1)
+                    # RNA_seq2vec_fea = np.array(RNA_seq2vec_fea).tolist()
+                    # pro_seq2vec_fea = seq2vec_pro.transform([get_words(3, protein_seq)]).reshape(-1)
+                    # pro_seq2vec_fea = np.array(pro_seq2vec_fea).tolist()
+
                     protein_seq = translate_sequence(protein_seq, group_dict)
                     RNA_tri_fea = get_k_nucleotide_composition(tris, RNA_seq)
                     protein_tri_fea = get_k_nucleotide_composition(protein_tris, protein_seq)
@@ -438,8 +496,8 @@ def prepare_RPI1807_feature(graph=False, seperate=False, chem_fea=True):
     print('RPI1807 data')
     seq2vec_rna = Seq2VecR2R()
     seq2vec_pro = Seq2VecR2R()
-    seq2vec_rna.load_customed_model("pretrained models/seq2vec_rna.model")
-    seq2vec_pro.load_customed_model("pretrained models/seq2vec_protein.model")
+    seq2vec_rna.load_customed_model("pretrained models/seq2vec_rna_word.model")
+    seq2vec_pro.load_customed_model("pretrained models/seq2vec_protein_word.model")
 
     # name_list = read_name_from_fasta('ncRNA-protein/RNA_seq.fa')
     seq_dict = read_fasta_file('data/ncRNA-protein/RPI1807_RNA_seq.fa')
@@ -465,11 +523,18 @@ def prepare_RPI1807_feature(graph=False, seperate=False, chem_fea=True):
                 label.append(1)
                 RNA_seq = seq_dict[pro2]
                 protein_seq = protein_seq_dict[pro1]
-                # seq2vec feature
-                RNA_seq2vec_fea = seq2vec_rna.transform([list(RNA_seq)]).reshape(-1) / len(RNA_seq)
+                # seq2vec feature char
+                # RNA_seq2vec_fea = seq2vec_rna.transform([list(RNA_seq)]).reshape(-1) / len(RNA_seq)
+                # RNA_seq2vec_fea = np.array(RNA_seq2vec_fea).tolist()
+                # pro_seq2vec_fea = seq2vec_pro.transform([list(protein_seq)]).reshape(-1) / len(protein_seq)
+                # pro_seq2vec_fea = np.array(pro_seq2vec_fea).tolist()
+
+                # # word level
+                RNA_seq2vec_fea = seq2vec_rna.transform([get_words(4, RNA_seq)]).reshape(-1) / len(RNA_seq)
                 RNA_seq2vec_fea = np.array(RNA_seq2vec_fea).tolist()
-                pro_seq2vec_fea = seq2vec_pro.transform([list(protein_seq)]).reshape(-1) / len(protein_seq)
+                pro_seq2vec_fea = seq2vec_pro.transform([get_words(3, protein_seq)]).reshape(-1) / len(protein_seq)
                 pro_seq2vec_fea = np.array(pro_seq2vec_fea).tolist()
+
                 protein_seq = translate_sequence(protein_seq, group_dict)
                 RNA_tri_fea = get_k_nucleotide_composition(tris, RNA_seq)
                 protein_tri_fea = get_k_nucleotide_composition(protein_tris, protein_seq)
@@ -499,11 +564,18 @@ def prepare_RPI1807_feature(graph=False, seperate=False, chem_fea=True):
                 label.append(0)
                 RNA_seq = seq_dict[pro2]
                 protein_seq = protein_seq_dict[pro1]
-                # seq2vec feature
-                RNA_seq2vec_fea = seq2vec_rna.transform([list(RNA_seq)]).reshape(-1) / len(RNA_seq)
+                # seq2vec feature char
+                # RNA_seq2vec_fea = seq2vec_rna.transform([list(RNA_seq)]).reshape(-1) / len(RNA_seq)
+                # RNA_seq2vec_fea = np.array(RNA_seq2vec_fea).tolist()
+                # pro_seq2vec_fea = seq2vec_pro.transform([list(protein_seq)]).reshape(-1) / len(protein_seq)
+                # pro_seq2vec_fea = np.array(pro_seq2vec_fea).tolist()
+
+                # word-level
+                RNA_seq2vec_fea = seq2vec_rna.transform([get_words(4, RNA_seq)]).reshape(-1) / len(RNA_seq)
                 RNA_seq2vec_fea = np.array(RNA_seq2vec_fea).tolist()
-                pro_seq2vec_fea = seq2vec_pro.transform([list(protein_seq)]).reshape(-1) / len(protein_seq)
+                pro_seq2vec_fea = seq2vec_pro.transform([get_words(3, protein_seq)]).reshape(-1) / len(protein_seq)
                 pro_seq2vec_fea = np.array(pro_seq2vec_fea).tolist()
+
                 protein_seq = translate_sequence(protein_seq, group_dict)
                 RNA_tri_fea = get_k_nucleotide_composition(tris, RNA_seq)
                 protein_tri_fea = get_k_nucleotide_composition(protein_tris, protein_seq)
@@ -541,9 +613,6 @@ def prepare_RPI2241_369_feature(rna_fasta_file, data_file, protein_fasta_file, s
     train[0] = []
     train[1] = []
     label = []
-    chem_fea = []
-    # posi_set = set()
-    # pro_set = set()
     with open(data_file, 'r') as fp:
         for line in fp:
             if line[0] == '#':
@@ -553,12 +622,19 @@ def prepare_RPI2241_369_feature(rna_fasta_file, data_file, protein_fasta_file, s
                 label.append(int(tmplabel))
                 RNA_seq = seq_dict[RNA]
                 protein_seq = protein_seq_dict[protein]
-                # seq2vec feature
+                # seq2vec feature char
                 RNA_seq2vec_fea = seq2vec_rna.transform([list(RNA_seq)]).reshape(-1) / len(RNA_seq)  # list(RNA_seq)
                 RNA_seq2vec_fea = np.array(RNA_seq2vec_fea).tolist()  # [[]] -> []  2D array to 1D array
                 pro_seq2vec_fea = seq2vec_pro.transform([list(protein_seq)]).reshape(-1) / len(
                     protein_seq)  # list(protein_seq)
-                pro_seq2vec_fea = np.array(pro_seq2vec_fea).tolist()  # [[]] -> []
+                pro_seq2vec_fea = np.array(pro_seq2vec_fea).tolist()
+
+                # word level
+                # RNA_seq2vec_fea = seq2vec_rna.transform([get_words(4, RNA_seq)]).reshape(-1)
+                # RNA_seq2vec_fea = np.array(RNA_seq2vec_fea).tolist()
+                # pro_seq2vec_fea = seq2vec_pro.transform([get_words(3, protein_seq)]).reshape(-1)
+                # pro_seq2vec_fea = np.array(pro_seq2vec_fea).tolist()
+
                 protein_seq = translate_sequence(protein_seq, group_dict)
                 RNA_tri_fea = get_k_nucleotide_composition(tris, RNA_seq)
                 protein_tri_fea = get_k_nucleotide_composition(protein_tris, protein_seq)
@@ -575,14 +651,36 @@ def prepare_RPI2241_369_feature(rna_fasta_file, data_file, protein_fasta_file, s
 
     return train, label
 
+def plug_and_play(RNA_seqs, pro_seqs):
+    seq2vec_rna = Seq2VecR2R(
+        max_index=100,
+        max_length=3000,
+        latent_size=20,
+        embedding_size=200,
+        encoding_size=100,
+        learning_rate=0.1
+    )
+    seq2vec_pro = Seq2VecR2R(
+        max_index=100,
+        max_length=3000,
+        latent_size=20,
+        embedding_size=200,
+        encoding_size=100,
+        learning_rate=0.1
+    )
+
+    # plug-and-play
+    RNA_seq2vec_fea = seq2vec_rna.fit_transform(RNA_seqs)  # .reshape(-1)
+    RNA_seq2vec_fea = np.array(RNA_seq2vec_fea).tolist()
+    pro_seq2vec_fea = seq2vec_pro.fit_transform(pro_seqs)  # .reshape(-1)
+    pro_seq2vec_fea = np.array(pro_seq2vec_fea).tolist()
+    pap = np.concatenate((pro_seq2vec_fea,RNA_seq2vec_fea), axis=1)
+
+    return pap
+
 
 def prepare_RPI488_feature(seperate=False, chem_fea=True):
     print('RPI488 dataset')
-    seq2vec_rna = Seq2VecR2R()
-    seq2vec_pro = Seq2VecR2R()
-    seq2vec_rna.load_customed_model("pretrained models/seq2vec_rna_word.model")
-    seq2vec_pro.load_customed_model("pretrained models/seq2vec_protein_word.model")
-
     interaction_pair = {}
     RNA_seq_dict = {}
     protein_seq_dict = {}
@@ -610,7 +708,8 @@ def prepare_RPI488_feature(seperate=False, chem_fea=True):
     group_dict = TransDict_from_list(groups)
     protein_tris = get_3_protein_trids()
     tris = get_4_trids()
-
+    RNA_seqs = []
+    pro_seqs = []
     train = {}
     train[0] = []  # for kmer feature
     train[1] = []  # for seq2vec feature
@@ -621,28 +720,40 @@ def prepare_RPI488_feature(seperate=False, chem_fea=True):
             label.append(val)
             RNA_seq = RNA_seq_dict[RNA]
             protein_seq = protein_seq_dict[protein]
-            # seq2vec feature
-            RNA_seq2vec_fea = seq2vec_rna.transform([get_words(8, RNA_seq)]).reshape(-1)
-            RNA_seq2vec_fea = np.array(RNA_seq2vec_fea).tolist()
-            pro_seq2vec_fea = seq2vec_pro.transform([get_words(6, protein_seq)]).reshape(-1)
-            pro_seq2vec_fea = np.array(pro_seq2vec_fea).tolist()
+            RNA_seqs.append([RNA_seq])
+            pro_seqs.append([protein_seq])
+
+            RNA_seq2vec_fea = get_bioseq2vec(RNA_seq, "rna")
+            pro_seq2vec_fea = get_bioseq2vec(protein_seq, "protein")
+
+            # RNA_seq2vec_fea_char = get_bioseq2vec_char(RNA_seq, "rna")
+            # pro_seq2vec_fea_char = get_bioseq2vec_char(protein_seq, "protein")
 
             # print(shape(RNA_seq2vec_fea), type(RNA_seq2vec_fea))
+            # k-mer feature
             protein_seq = translate_sequence(protein_seq_dict[protein], group_dict)  # reduced Alphabet
             RNA_tri_fea = get_k_nucleotide_composition(tris, RNA_seq)
             protein_tri_fea = get_k_nucleotide_composition(protein_tris, protein_seq)
             if seperate:
                 tmp_fea = (protein_tri_fea, RNA_tri_fea)
-                tmp_2vec = (pro_seq2vec_fea, RNA_seq2vec_fea)
+                # tmp_2vec_char = (pro_seq2vec_fea_char, RNA_seq2vec_fea_char)
+                tmp_2vec = (pro_seq2vec_fea, RNA_tri_fea) # RNA_seq2vec_fea
                 # tmp3 = (protein_tri_fea + pro_seq2vec_fea, RNA_tri_fea + RNA_seq2vec_fea)
             else:
                 tmp_fea = protein_tri_fea + RNA_tri_fea
-                tmp_2vec = pro_seq2vec_fea + RNA_seq2vec_fea
+                # tmp_2vec_char = pro_seq2vec_fea_char + RNA_seq2vec_fea_char
+                tmp_2vec = protein_tri_fea + RNA_seq2vec_fea
                 # tmp3 = protein_tri_fea + pro_seq2vec_fea + RNA_tri_fea + RNA_seq2vec_fea
             train[0].append(tmp_fea)
             train[1].append(tmp_2vec)
         else:
             print(RNA, protein)
+    # plug-and-play
+    # RNA_seq2vec_fea = seq2vec_rna.fit_transform(RNA_seqs)  # .reshape(-1)
+    # RNA_seq2vec_fea = np.array(RNA_seq2vec_fea).tolist()
+    # pro_seq2vec_fea = seq2vec_pro.fit_transform(pro_seqs)  # .reshape(-1)
+    # pro_seq2vec_fea = np.array(pro_seq2vec_fea).tolist()
+    # train[0] = np.concatenate((pro_seq2vec_fea,RNA_seq2vec_fea), axis=1)
     return train, label
 
 
@@ -719,7 +830,7 @@ def get_data(dataset, seperate=False):
     return X, labels
 
 
-def plot_roc_curve(labels, probality, legend_text, linestyle, auc_tag=True):
+def plot_roc_curve(labels, probality, legend_text, auc_tag=True):
     # fpr2, tpr2, thresholds = roc_curve(labels, pred_y)
     fpr, tpr, thresholds = roc_curve(labels, probality)  # probas_[:, 1])
     roc_auc = auc(fpr, tpr)
@@ -866,8 +977,8 @@ def main(X_data, y):
 
 if __name__ == "__main__":
     # prepare data
-    dataset = "RPI488"
-    # get_data()方法同时回传kmer, seq2vec特征
+    dataset = "RPI488"  # NPInter RPI488
+    # get_data()方法同时回传kmer, bioseq2vec特征
     X, labels = get_data(dataset)
     X1, X2 = X[0], X[1]
     X1 = preprocess_data(X1)  # 特征StandardScaler()归一化
@@ -889,18 +1000,17 @@ if __name__ == "__main__":
     print(np.mean(np.array(all_performance_rf1), axis=0))
     print('---' * 50)
 
-    print('mean performance of svm using bioseq2vec feature')
+    print('mean performance of svm using BioSeq2vec(protein)+kmer(RNA) feature')
     print(np.mean(np.array(all_performance_svm2), axis=0))
     print('---' * 50)
-    print('mean performance of AdaBoost using bioseq2vec feature')
+    print('mean performance of AdaBoost using BioSeq2vec(protein)+kmer(RNA) feature')
     print(np, mean(np.array(all_performance_ada2), axis=0))
     print('---' * 50)
-    print('mean performance of Random forest using bioseq2vec feature')
+    print('mean performance of Random forest using BioSeq2vec(protein)+kmer(RNA) feature')
     print(np.mean(np.array(all_performance_rf2), axis=0))
     print('---' * 50)
 
     Figure = plt.figure()
-
     plot_roc_curve(all_labels, all_prob[1], 'kmer_AdaBoost')
     plot_roc_curve(all_labels, all_prob[2], 'kmer_Random Forest')
     plot_roc_curve(all_labels, all_prob[0], 'kmer_SVM')
