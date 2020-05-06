@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project version="4">
   <component name="ChangeListManager">
-    <list default="true" id="8ecf6b28-2953-43b3-8ee0-3f9d13bb6dac" name="Default Changelist" comment="" />
+    <list default="true" id="f640ee1b-1225-4a24-905e-c5a202f5c82f" name="Default Changelist" comment="" />
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
     <option name="HIGHLIGHT_NON_ACTIVE_CHANGELIST" value="false" />
@@ -10,21 +10,20 @@
   <component name="Git.Settings">
     <option name="RECENT_GIT_ROOT_PATH" value="$PROJECT_DIR$" />
   </component>
-  <component name="ProjectId" id="1ZsynjTTJc91qxoR9khKO7cTJZh" />
+  <component name="ProjectId" id="1a4H1ca2IWdYiICNQz6esKZHSu8" />
   <component name="ProjectLevelVcsManager" settingsEditedManually="true" />
   <component name="ProjectViewState">
     <option name="hideEmptyMiddlePackages" value="true" />
-    <option name="showExcludedFiles" value="true" />
     <option name="showLibraryContents" value="true" />
   </component>
   <component name="PropertiesComponent">
     <property name="RunOnceActivity.ShowReadmeOnStart" value="true" />
     <property name="WebServerToolWindowFactoryState" value="false" />
-    <property name="settings.editor.selected.configurable" value="com.jetbrains.python.configuration.PyActiveSdkModuleConfigurable" />
+    <property name="settings.editor.selected.configurable" value="reference.settingsdialog.IDE.editor.colors.General" />
   </component>
   <component name="RunManager" selected="Python.main">
     <configuration name="bioseq2vec" type="PythonConfigurationType" factoryName="Python" temporary="true" nameIsGenerated="true">
-      <module name="seq2vec" />
+      <module name="bioseq2vec" />
       <option name="INTERPRETER_OPTIONS" value="" />
       <option name="PARENT_ENVS" value="true" />
       <envs>
@@ -45,8 +44,30 @@
       <option name="INPUT_FILE" value="" />
       <method v="2" />
     </configuration>
+    <configuration name="dtypes" type="PythonConfigurationType" factoryName="Python" temporary="true" nameIsGenerated="true">
+      <module name="bioseq2vec" />
+      <option name="INTERPRETER_OPTIONS" value="" />
+      <option name="PARENT_ENVS" value="true" />
+      <envs>
+        <env name="PYTHONUNBUFFERED" value="1" />
+      </envs>
+      <option name="SDK_HOME" value="" />
+      <option name="WORKING_DIRECTORY" value="$PROJECT_DIR$/../../Anaconda/Lib/site-packages/tensorflow/python/framework" />
+      <option name="IS_MODULE_SDK" value="true" />
+      <option name="ADD_CONTENT_ROOTS" value="true" />
+      <option name="ADD_SOURCE_ROOTS" value="true" />
+      <EXTENSION ID="PythonCoverageRunConfigurationExtension" runner="coverage.py" />
+      <option name="SCRIPT_NAME" value="$PROJECT_DIR$/../../Anaconda/Lib/site-packages/tensorflow/python/framework/dtypes.py" />
+      <option name="PARAMETERS" value="" />
+      <option name="SHOW_COMMAND_LINE" value="false" />
+      <option name="EMULATE_TERMINAL" value="false" />
+      <option name="MODULE_MODE" value="false" />
+      <option name="REDIRECT_INPUT" value="false" />
+      <option name="INPUT_FILE" value="" />
+      <method v="2" />
+    </configuration>
     <configuration name="main" type="PythonConfigurationType" factoryName="Python" temporary="true" nameIsGenerated="true">
-      <module name="seq2vec" />
+      <module name="bioseq2vec" />
       <option name="INTERPRETER_OPTIONS" value="" />
       <option name="PARENT_ENVS" value="true" />
       <envs>
@@ -71,6 +92,7 @@
       <list>
         <item itemvalue="Python.main" />
         <item itemvalue="Python.bioseq2vec" />
+        <item itemvalue="Python.dtypes" />
       </list>
     </recent_temporary>
   </component>
@@ -79,30 +101,26 @@
   </component>
   <component name="TaskManager">
     <task active="true" id="Default" summary="Default task">
-      <changelist id="8ecf6b28-2953-43b3-8ee0-3f9d13bb6dac" name="Default Changelist" comment="" />
-      <created>1585642265319</created>
+      <changelist id="f640ee1b-1225-4a24-905e-c5a202f5c82f" name="Default Changelist" comment="" />
+      <created>1585987732152</created>
       <option name="number" value="Default" />
       <option name="presentableId" value="Default" />
-      <updated>1585642265319</updated>
-      <workItem from="1585642269253" duration="61000" />
-      <workItem from="1585643841075" duration="32000" />
-      <workItem from="1585643884266" duration="4678000" />
-      <workItem from="1585651087091" duration="3047000" />
-      <workItem from="1585654690330" duration="11964000" />
-      <workItem from="1585668489598" duration="734000" />
-      <workItem from="1585805267490" duration="3457000" />
-      <workItem from="1585809300450" duration="967000" />
-      <workItem from="1585814292510" duration="1379000" />
-      <workItem from="1585816211161" duration="769000" />
-      <workItem from="1585833358524" duration="4255000" />
-      <workItem from="1585894312160" duration="8939000" />
-      <workItem from="1585986854935" duration="854000" />
-      <workItem from="1586004692939" duration="9528000" />
+      <updated>1585987732152</updated>
+      <workItem from="1585987734658" duration="7861000" />
+      <workItem from="1587205460158" duration="3715000" />
+      <workItem from="1587221684713" duration="690000" />
+      <workItem from="1587380086826" duration="12935000" />
+      <workItem from="1588395904929" duration="9337000" />
+      <workItem from="1588418804491" duration="2412000" />
+      <workItem from="1588556352578" duration="4470000" />
+      <workItem from="1588601685550" duration="830000" />
+      <workItem from="1588687334213" duration="5597000" />
+      <workItem from="1588739024324" duration="723000" />
     </task>
     <servers />
   </component>
   <component name="TypeScriptGeneratedFilesManager">
-    <option name="version" value="1" />
+    <option name="version" value="2" />
   </component>
   <component name="VcsManagerConfiguration">
     <ignored-roots>
@@ -110,53 +128,62 @@
     </ignored-roots>
   </component>
   <component name="WindowStateProjectService">
-    <state x="361" y="74" key="#Inspections" timestamp="1585987325174">
+    <state x="651" y="274" key="#Notifications" timestamp="1587381027773">
       <screen x="0" y="0" width="1536" height="824" />
     </state>
-    <state x="361" y="74" key="#Inspections/0.0.1536.824@0.0.1536.824" timestamp="1585987325174" />
-    <state x="465" y="221" key="#com.intellij.fileTypes.FileTypeChooser" timestamp="1585814706821">
+    <state x="651" y="274" key="#Notifications/0.0.1536.824@0.0.1536.824" timestamp="1587381027773" />
+    <state x="223" y="67" key="#com.intellij.execution.impl.EditConfigurationsDialog" timestamp="1587384906552">
       <screen x="0" y="0" width="1536" height="824" />
     </state>
-    <state x="465" y="221" key="#com.intellij.fileTypes.FileTypeChooser/0.0.1536.824@0.0.1536.824" timestamp="1585814706821" />
-    <state width="1493" height="205" key="GridCell.Tab.0.bottom" timestamp="1586017202357">
+    <state x="223" y="67" key="#com.intellij.execution.impl.EditConfigurationsDialog/0.0.1536.824@0.0.1536.824" timestamp="1587384906552" />
+    <state width="1493" height="202" key="GridCell.Tab.0.bottom" timestamp="1588743950456">
       <screen x="0" y="0" width="1536" height="824" />
     </state>
-    <state width="1493" height="205" key="GridCell.Tab.0.bottom/0.0.1536.824@0.0.1536.824" timestamp="1586017202357" />
-    <state width="1493" height="205" key="GridCell.Tab.0.center" timestamp="1586017202357">
+    <state width="1493" height="202" key="GridCell.Tab.0.bottom/0.0.1536.824@0.0.1536.824" timestamp="1588743950456" />
+    <state width="1493" height="202" key="GridCell.Tab.0.center" timestamp="1588743950456">
       <screen x="0" y="0" width="1536" height="824" />
     </state>
-    <state width="1493" height="205" key="GridCell.Tab.0.center/0.0.1536.824@0.0.1536.824" timestamp="1586017202357" />
-    <state width="1493" height="205" key="GridCell.Tab.0.left" timestamp="1586017202357">
+    <state width="1493" height="202" key="GridCell.Tab.0.center/0.0.1536.824@0.0.1536.824" timestamp="1588743950456" />
+    <state width="1493" height="202" key="GridCell.Tab.0.left" timestamp="1588743950456">
       <screen x="0" y="0" width="1536" height="824" />
     </state>
-    <state width="1493" height="205" key="GridCell.Tab.0.left/0.0.1536.824@0.0.1536.824" timestamp="1586017202357" />
-    <state width="1493" height="205" key="GridCell.Tab.0.right" timestamp="1586017202357">
+    <state width="1493" height="202" key="GridCell.Tab.0.left/0.0.1536.824@0.0.1536.824" timestamp="1588743950456" />
+    <state width="1493" height="202" key="GridCell.Tab.0.right" timestamp="1588743950456">
       <screen x="0" y="0" width="1536" height="824" />
     </state>
-    <state width="1493" height="205" key="GridCell.Tab.0.right/0.0.1536.824@0.0.1536.824" timestamp="1586017202357" />
-    <state width="1493" height="261" key="GridCell.Tab.1.bottom" timestamp="1585918931490">
+    <state width="1493" height="202" key="GridCell.Tab.0.right/0.0.1536.824@0.0.1536.824" timestamp="1588743950456" />
+    <state width="1493" height="261" key="GridCell.Tab.1.bottom" timestamp="1587397932678">
       <screen x="0" y="0" width="1536" height="824" />
     </state>
-    <state width="1493" height="261" key="GridCell.Tab.1.bottom/0.0.1536.824@0.0.1536.824" timestamp="1585918931490" />
-    <state width="1493" height="261" key="GridCell.Tab.1.center" timestamp="1585918931490">
+    <state width="1493" height="261" key="GridCell.Tab.1.bottom/0.0.1536.824@0.0.1536.824" timestamp="1587397932678" />
+    <state width="1493" height="261" key="GridCell.Tab.1.center" timestamp="1587397932678">
       <screen x="0" y="0" width="1536" height="824" />
     </state>
-    <state width="1493" height="261" key="GridCell.Tab.1.center/0.0.1536.824@0.0.1536.824" timestamp="1585918931490" />
-    <state width="1493" height="261" key="GridCell.Tab.1.left" timestamp="1585918931490">
+    <state width="1493" height="261" key="GridCell.Tab.1.center/0.0.1536.824@0.0.1536.824" timestamp="1587397932678" />
+    <state width="1493" height="261" key="GridCell.Tab.1.left" timestamp="1587397932678">
       <screen x="0" y="0" width="1536" height="824" />
     </state>
-    <state width="1493" height="261" key="GridCell.Tab.1.left/0.0.1536.824@0.0.1536.824" timestamp="1585918931490" />
-    <state width="1493" height="261" key="GridCell.Tab.1.right" timestamp="1585918931490">
+    <state width="1493" height="261" key="GridCell.Tab.1.left/0.0.1536.824@0.0.1536.824" timestamp="1587397932678" />
+    <state width="1493" height="261" key="GridCell.Tab.1.right" timestamp="1587397932678">
       <screen x="0" y="0" width="1536" height="824" />
     </state>
-    <state width="1493" height="261" key="GridCell.Tab.1.right/0.0.1536.824@0.0.1536.824" timestamp="1585918931490" />
-    <state x="272" y="57" key="SettingsEditor" timestamp="1585897649164">
+    <state width="1493" height="261" key="GridCell.Tab.1.right/0.0.1536.824@0.0.1536.824" timestamp="1587397932678" />
+    <state x="272" y="57" key="SettingsEditor" timestamp="1588395966758">
       <screen x="0" y="0" width="1536" height="824" />
     </state>
-    <state x="272" y="57" key="SettingsEditor/0.0.1536.824@0.0.1536.824" timestamp="1585897649164" />
+    <state x="272" y="57" key="SettingsEditor/0.0.1536.824@0.0.1536.824" timestamp="1588395966758" />
+    <state width="776" height="420" key="XDebugger.FullValuePopup" timestamp="1587394448258">
+      <screen x="0" y="0" width="1536" height="824" />
+    </state>
+    <state width="776" height="420" key="XDebugger.FullValuePopup/0.0.1536.824@0.0.1536.824" timestamp="1587394448258" />
+    <state x="431" y="145" width="672" height="678" key="search.everywhere.popup" timestamp="1587390140115">
+      <screen x="0" y="0" width="1536" height="824" />
+    </state>
+    <state x="431" y="145" width="672" height="678" key="search.everywhere.popup/0.0.1536.824@0.0.1536.824" timestamp="1587390140115" />
   </component>
   <component name="com.intellij.coverage.CoverageDataManagerImpl">
-    <SUITE FILE_PATH="coverage/seq2vec$bioseq2vec.coverage" NAME="bioseq2vec Coverage Results" MODIFIED="1585900439798" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$" />
-    <SUITE FILE_PATH="coverage/seq2vec$main.coverage" NAME="main Coverage Results" MODIFIED="1586012277157" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$" />
+    <SUITE FILE_PATH="coverage/bioseq2vec$dtypes.coverage" NAME="dtypes Coverage Results" MODIFIED="1588398866802" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$/../../Anaconda/Lib/site-packages/tensorflow/python/framework" />
+    <SUITE FILE_PATH="coverage/bioseq2vec$bioseq2vec.coverage" NAME="bioseq2vec Coverage Results" MODIFIED="1588561294945" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$" />
+    <SUITE FILE_PATH="coverage/bioseq2vec$main.coverage" NAME="main Coverage Results" MODIFIED="1588739053249" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$" />
   </component>
 </project>
