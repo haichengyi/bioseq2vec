@@ -1,5 +1,6 @@
 # BioSeq2vec
 Learning representation of biological sequences using LSTM Encoder-Decoder
+![BioSeq2vec](bioseq2vec/img/model.png) 
 
 ### Usage:
 
@@ -22,10 +23,6 @@ Learning representation of biological sequences using LSTM Encoder-Decoder
   # transform sequences
   bioseq2vec_RNA_feature = BioSeq2vec_RNA.transfrom(RNA_seqs)
   bioseq2vec_Protein_feature = BioSeq2vec_protein.transfrom(Protein_seqs)
-
-  # transform single sequence
-  bioseq2vec_RNA_feature = BioSeq2vec_RNA.transform_single_sequenc(RNA_seq)
-  bioseq2vec_Protein_feature = BioSeq2vec_protein.transform_single_sequence(Protein_seq)
   ```
 * Plug-and-Play
   
@@ -84,7 +81,6 @@ pip install -r requirements.txt
 ```
 ### Code to reproduce the results
 ```python
-# the datasets include RPI369, RPI2241, RPI1807, RPI488, NPInter and RPI13254
 python main.py
 ```
 ### Citation

@@ -25,11 +25,28 @@ def read_fasta_file(fasta_file):
     return seq_dict
 
 
+# def get_words(k, seq):
+#     # seq_len = len(seq)
+#     words = []
+#
+#     # tmp_fea = [0] * len(tris)
+#     for x in range(len(seq) + 1 - k):
+#         kmer = seq[x:x + k]
+#         words.append(str(kmer))
+#     # tri_feature = [float(val)/seq_len for val in tmp_fea]
+#     # pdb.set_trace()
+#     return words
+
 def get_words(k, seq):
-    # seq_len = len(seq)
+    seq_len = len(seq)
     words = []
 
     # tmp_fea = [0] * len(tris)
+    # i = 0
+    # while len(seq) - i > k:
+    #     word = seq[i:i + k]
+    #     words.append(str(word))
+    #     i = i + k
     for x in range(len(seq) + 1 - k):
         kmer = seq[x:x + k]
         words.append(str(kmer))
@@ -88,8 +105,8 @@ if __name__ == "__main__":
         max_index=10,
         max_length=300,
         latent_size=20,
-        embedding_size=200,
-        encoding_size=100,
+        embedding_size=100,
+        encoding_size=200,
         learning_rate=0.05
     )
 
@@ -97,6 +114,6 @@ if __name__ == "__main__":
     seq_dict = read_fasta_file(file_path)
     sequences = []
     for seq in seq_dict.values():
-        words = get_words(6, seq)  # 3 for protein, 4 for RNA/DNA
+        words = get_words(3, seq)  # 3 for protein, 4 for RNA/DNA
         sequences.append(words)
-    pretrain(sequences, transformer, "protein_word6")
+    pretrain(sequences, transformer, "protein_word_200")
