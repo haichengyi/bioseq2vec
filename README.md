@@ -4,7 +4,7 @@ Learning representation of biological sequences using LSTM Encoder-Decoder
 
 ### Usage:
 
-* Load trained model for both RNA and protein
+* Load pretrained models to distill deep representations of amino acids and nucleic acids sequences
 
   ```python
   from bioseq2vec import Seq2VecR2R
@@ -40,7 +40,7 @@ Learning representation of biological sequences using LSTM Encoder-Decoder
 
   feature = BioSeq2vec.fit_transfrom(seqs)
   ```
-* Training
+* Pretraining
   
   ```python
   from bioseq2vec import Seq2VecR2R
@@ -84,4 +84,7 @@ pip install -r requirements.txt
 python main.py
 ```
 ### Citation
-Ready soon
+```
+N/A, Ready soon
+```
+Contact: haichengyi#gmail.com
