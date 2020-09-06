@@ -85,6 +85,6 @@ python main.py
 ```
 ### Citation
 ```
-N/A, Ready soon
+Hai-Cheng Yi, Zhu-Hong You, Xiao-Rui Su, Zhen-Hao Guo, Yu-An Huang. Learning Deep Representation of Biological Sequences with Pre-training Encoder-Decoder Model.
 ```
 Contact: haichengyi#gmail.com
