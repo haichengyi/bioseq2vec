@@ -85,6 +85,6 @@ python main.py
 ```
 ### Citation
 ```
-Yi HC., You ZH., Su XR., Huang DS., Guo ZH. (2020) A Unified Deep Biological Sequence Representation Learning with Pretrained Encoder-Decoder Model. In: Huang DS., Jo KH. (eds) Intelligent Computing Theories and Application. ICIC 2020. Lecture Notes in Computer Science, vol 12464. Springer, Cham. https://doi.org/10.1007/978-3-030-60802-6_30
+Yi, H. C., You, Z. H., Su, X. R., Huang, D. S., & Guo, Z. H. (2020, October). A Unified Deep Biological Sequence Representation Learning with Pretrained Encoder-Decoder Model. In International Conference on Intelligent Computing (pp. 339-347). Springer, Cham.
 ```
 Contact: haichengyi#gmail.com
