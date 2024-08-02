@@ -1,7 +1,7 @@
 pylint
 numpy
 tensorflow
-keras==2.0.8
+keras==2.13.1
 yoctol_utils
 gensim
 h5py
